@@ -7,9 +7,9 @@ from django.contrib.auth.models import User
 # Create your views here.
 def user_register(request):
     if request.method=='POST':
-        username=request.POST.get['username']
-        pass1=request.POST.get['pass1']
-        pass2=request.POST.get['pass2']
+        username=request.POST.get('username')
+        pass1=request.POST.get('pass1')
+        pass2=request.POST.get('pass2')
         
         if User.objects.filter(username=username).exists():
             messages.error(request,"Username already taken..Try again!!")
@@ -28,10 +28,10 @@ def user_register(request):
 
 def user_login(request):
     if request.method=='POST':
-        username=request.POST.get['username']
-        password=request.POST.get['password']
+        username=request.POST.get('username')
+        password=request.POST.get('password')
         
-        user=authenticate(username='username',password='password')
+        user=authenticate(username=username,password=password)
         if user is not None:
             login(request,user)
             return redirect('app:home')
