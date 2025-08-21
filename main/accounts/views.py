@@ -34,7 +34,7 @@ def user_login(request):
         user=authenticate(username=username,password=password)
         if user is not None:
             login(request,user)
-            return redirect('app:home')
+            return redirect('home:index')
         else:
             messages.error(request,"Invalid Credentials..Try again!!")
             return redirect('accounts:user_login')
@@ -43,4 +43,4 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    
+    return redirect('accounts:user_login')
