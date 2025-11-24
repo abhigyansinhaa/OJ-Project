@@ -1,0 +1,793 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Problems - EvalX{% endblock %}
+
+{% block extra_css %}
+<style>
+    .problems-container {
+        padding: 2rem 0;
+        min-height: calc(100vh - 80px);
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--dark-card) 0%, var(--dark-surface) 100%);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--dark-text);
+    }
+
+    .page-subtitle {
+        color: var(--dark-text-secondary);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .filters-section {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .filters-row {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .filter-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--dark-text);
+    }
+
+    .filter-select {
+        background: var(--dark-surface);
+        border: 1px solid var(--dark-border);
+        color: var(--dark-text);
+        border-radius: 8px;
+        padding: 0.5rem;
+        min-width: 120px;
+    }
+
+    .filter-select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+    }
+
+    .search-box {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .search-input {
+        background: var(--dark-surface);
+        border: 1px solid var(--dark-border);
+        color: var(--dark-text);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        width: 100%;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+    }
+
+    .problems-content {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 2rem;
+    }
+
+    .sidebar-filters {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        height: fit-content;
+    }
+
+    .sidebar-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--dark-border);
+    }
+
+    .filter-option {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 0.5rem;
+        border-radius: 6px;
+    }
+
+    .filter-option:hover {
+        background: rgba(99, 102, 241, 0.1);
+    }
+
+    .filter-checkbox {
+        accent-color: var(--primary-color);
+    }
+
+    .filter-text {
+        color: var(--dark-text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .problems-grid {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .problem-card {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .problem-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .problem-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .problem-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--primary-color);
+    }
+
+    .problem-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .problem-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 0.5rem;
+    }
+
+    .problem-description {
+        color: var(--dark-text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .problem-meta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--dark-text-secondary);
+        font-size: 0.875rem;
+    }
+
+    .difficulty-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .difficulty-easy {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--success-color);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .difficulty-medium {
+        background: rgba(245, 158, 11, 0.2);
+        color: var(--warning-color);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .difficulty-hard {
+        background: rgba(239, 68, 68, 0.2);
+        color: var(--danger-color);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .problem-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .btn-solve {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-solve:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-preview {
+        background: transparent;
+        border: 1px solid var(--dark-border);
+        color: var(--dark-text-secondary);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-preview:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+
+    .page-link {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        color: var(--dark-text);
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .page-link:hover {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+        text-decoration: none;
+    }
+
+    .page-link.active {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+    .loading-spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 3rem;
+        color: var(--dark-text-secondary);
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid var(--dark-border);
+        border-top: 4px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-right: 1rem;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+        .problems-content {
+            grid-template-columns: 1fr;
+        }
+        
+        .filters-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .search-box {
+            min-width: auto;
+        }
+        
+        .problem-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .problem-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="problems-container">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Programming Problems</h1>
+            <p class="page-subtitle">
+                Choose from hundreds of carefully curated programming challenges. 
+                Start with easy problems and work your way up to advanced algorithms.
+            </p>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="filters-row">
+                <div class="filter-group">
+                    <label class="filter-label">Difficulty</label>
+                    <select class="filter-select">
+                        <option value="">All Levels</option>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Category</label>
+                    <select class="filter-select">
+                        <option value="">All Categories</option>
+                        <option value="arrays">Arrays</option>
+                        <option value="strings">Strings</option>
+                        <option value="linked-lists">Linked Lists</option>
+                        <option value="trees">Trees</option>
+                        <option value="graphs">Graphs</option>
+                        <option value="dynamic-programming">Dynamic Programming</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select">
+                        <option value="">All Problems</option>
+                        <option value="solved">Solved</option>
+                        <option value="attempted">Attempted</option>
+                        <option value="unsolved">Unsolved</option>
+                    </select>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Search problems...">
+                </div>
+            </div>
+        </div>
+
+        <div class="problems-content">
+            <!-- Sidebar Filters -->
+            <div class="sidebar-filters">
+                <h6 class="sidebar-title">Additional Filters</h6>
+                
+                <div class="filter-option">
+                    <input type="checkbox" class="filter-checkbox" id="filter-solved">
+                    <label for="filter-solved" class="filter-text">Show solved problems</label>
+                </div>
+                
+                <div class="filter-option">
+                    <input type="checkbox" class="filter-checkbox" id="filter-bookmarked">
+                    <label for="filter-bookmarked" class="filter-text">Bookmarked only</label>
+                </div>
+                
+                <div class="filter-option">
+                    <input type="checkbox" class="filter-checkbox" id="filter-premium">
+                    <label for="filter-premium" class="filter-text">Premium problems</label>
+                </div>
+                
+                <h6 class="sidebar-title" style="margin-top: 2rem;">Topics</h6>
+                
+                <div class="filter-option">
+                    <input type="checkbox" class="filter-checkbox" id="topic-arrays">
+                    <label for="topic-arrays" class="filter-text">Arrays & Strings</label>
+                </div>
+                
+                <div class="filter-option">
+                    <input type="checkbox" class="filter-checkbox" id="topic-linked-lists">
+                    <label for="topic-linked-lists" class="filter-text">Linked Lists</label>
+                </div>
+                
+                <div class="filter-option">
+                    <input type="checkbox" class="filter-checkbox" id="topic-trees">
+                    <label for="topic-trees" class="filter-text">Trees & Graphs</label>
+                </div>
+                
+                <div class="filter-option">
+                    <input type="checkbox" class="filter-checkbox" id="topic-dp">
+                    <label for="topic-dp" class="filter-text">Dynamic Programming</label>
+                </div>
+            </div>
+
+            <!-- Problems Grid -->
+            <div class="problems-grid">
+                <!-- Problem Card 1 -->
+                <div class="problem-card">
+                    <div class="problem-header">
+                        <div>
+                            <h3 class="problem-title">Two Sum</h3>
+                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="meta-item">
+                                <i class="fas fa-users"></i>
+                                <span>15.2k solved</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-star"></i>
+                                <span>4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="problem-description">
+                        Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+                    </p>
+                    
+                    <div class="problem-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span>Arrays</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>15 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-code"></i>
+                            <span>Python, C++, Java</span>
+                        </div>
+                    </div>
+                    
+                    <div class="problem-actions">
+                        <a href="submit:submit" class="btn-solve">
+                            <i class="fas fa-play"></i>
+                            Solve Problem
+                        </a>
+                        <a href="#" class="btn-preview">
+                            <i class="fas fa-eye"></i>
+                            Preview
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Problem Card 2 -->
+                <div class="problem-card">
+                    <div class="problem-header">
+                        <div>
+                            <h3 class="problem-title">Valid Parentheses</h3>
+                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="meta-item">
+                                <i class="fas fa-users"></i>
+                                <span>12.8k solved</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-star"></i>
+                                <span>4.6</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="problem-description">
+                        Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+                    </p>
+                    
+                    <div class="problem-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span>Stack</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>20 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-code"></i>
+                            <span>Python, C++, Java</span>
+                        </div>
+                    </div>
+                    
+                    <div class="problem-actions">
+                        <a href="#" class="btn-solve">
+                            <i class="fas fa-play"></i>
+                            Solve Problem
+                        </a>
+                        <a href="#" class="btn-preview">
+                            <i class="fas fa-eye"></i>
+                            Preview
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Problem Card 3 -->
+                <div class="problem-card">
+                    <div class="problem-header">
+                        <div>
+                            <h3 class="problem-title">Merge Sorted Array</h3>
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="meta-item">
+                                <i class="fas fa-users"></i>
+                                <span>8.9k solved</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-star"></i>
+                                <span>4.4</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="problem-description">
+                        You are given two integer arrays nums1 and nums2, sorted in non-decreasing order, and two integers m and n.
+                    </p>
+                    
+                    <div class="problem-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span>Arrays</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>25 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-code"></i>
+                            <span>Python, C++, Java</span>
+                        </div>
+                    </div>
+                    
+                    <div class="problem-actions">
+                        <a href="#" class="btn-solve">
+                            <i class="fas fa-play"></i>
+                            Solve Problem
+                        </a>
+                        <a href="#" class="btn-preview">
+                            <i class="fas fa-eye"></i>
+                            Preview
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Problem Card 4 -->
+                <div class="problem-card">
+                    <div class="problem-header">
+                        <div>
+                            <h3 class="problem-title">Binary Tree Inorder Traversal</h3>
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="meta-item">
+                                <i class="fas fa-users"></i>
+                                <span>6.7k solved</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-star"></i>
+                                <span>4.2</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="problem-description">
+                        Given the root of a binary tree, return the inorder traversal of its nodes' values.
+                    </p>
+                    
+                    <div class="problem-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span>Trees</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>30 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-code"></i>
+                            <span>Python, C++, Java</span>
+                        </div>
+                    </div>
+                    
+                    <div class="problem-actions">
+                        <a href="#" class="btn-solve">
+                            <i class="fas fa-play"></i>
+                            Solve Problem
+                        </a>
+                        <a href="#" class="btn-preview">
+                            <i class="fas fa-eye"></i>
+                            Preview
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Problem Card 5 -->
+                <div class="problem-card">
+                    <div class="problem-header">
+                        <div>
+                            <h3 class="problem-title">Maximum Subarray</h3>
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="meta-item">
+                                <i class="fas fa-users"></i>
+                                <span>11.3k solved</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-star"></i>
+                                <span>4.7</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="problem-description">
+                        Given an integer array nums, find the subarray with the largest sum, and return its sum.
+                    </p>
+                    
+                    <div class="problem-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span>Dynamic Programming</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>35 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-code"></i>
+                            <span>Python, C++, Java</span>
+                        </div>
+                    </div>
+                    
+                    <div class="problem-actions">
+                        <a href="#" class="btn-solve">
+                            <i class="fas fa-play"></i>
+                            Solve Problem
+                        </a>
+                        <a href="#" class="btn-preview">
+                            <i class="fas fa-eye"></i>
+                            Preview
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Problem Card 6 -->
+                <div class="problem-card">
+                    <div class="problem-header">
+                        <div>
+                            <h3 class="problem-title">Longest Palindromic Substring</h3>
+                            <span class="difficulty-badge difficulty-hard">Hard</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="meta-item">
+                                <i class="fas fa-users"></i>
+                                <span>4.2k solved</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-star"></i>
+                                <span>4.1</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="problem-description">
+                        Given a string s, return the longest palindromic substring in s.
+                    </p>
+                    
+                    <div class="problem-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span>Strings</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>45 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-code"></i>
+                            <span>Python, C++, Java</span>
+                        </div>
+                    </div>
+                    
+                    <div class="problem-actions">
+                        <a href="#" class="btn-solve">
+                            <i class="fas fa-play"></i>
+                            Solve Problem
+                        </a>
+                        <a href="#" class="btn-preview">
+                            <i class="fas fa-eye"></i>
+                            Preview
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <a href="#" class="page-link active">1</a>
+            <a href="#" class="page-link">2</a>
+            <a href="#" class="page-link">3</a>
+            <a href="#" class="page-link">4</a>
+            <a href="#" class="page-link">5</a>
+            <a href="#" class="page-link">Next</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

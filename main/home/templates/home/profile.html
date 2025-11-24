@@ -1,0 +1,421 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Profile - EvalX{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-container {
+        padding: 2rem 0;
+        min-height: calc(100vh - 80px);
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, var(--dark-card) 0%, var(--dark-surface) 100%);
+        color: var(--dark-text);
+        border-radius: var(--border-radius);
+        padding: 3rem 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--dark-border);
+    }
+
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        background: rgba(99, 102, 241, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 3rem;
+        color: var(--primary-color);
+        border: 4px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .profile-name {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--dark-text);
+    }
+
+    .profile-username {
+        font-size: 1.25rem;
+        color: var(--dark-text-secondary);
+        margin-bottom: 1rem;
+    }
+
+    .profile-stats {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .profile-stat {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: block;
+        color: var(--primary-color);
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: var(--dark-text-secondary);
+    }
+
+    .profile-content {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .profile-sidebar {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        height: fit-content;
+    }
+
+    .sidebar-section {
+        margin-bottom: 2rem;
+    }
+
+    .sidebar-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .sidebar-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--dark-border);
+    }
+
+    .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 0;
+        color: var(--dark-text-secondary);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-radius: 8px;
+    }
+
+    .sidebar-item:hover {
+        color: var(--primary-color);
+        background: rgba(99, 102, 241, 0.1);
+        padding-left: 0.5rem;
+        text-decoration: none;
+    }
+
+    .profile-main {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--dark-text);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .achievement-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .achievement-card {
+        background: var(--dark-surface);
+        border: 2px solid var(--dark-border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .achievement-card.unlocked {
+        border-color: var(--success-color);
+        background: rgba(16, 185, 129, 0.05);
+    }
+
+    .achievement-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .achievement-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.25rem;
+    }
+
+    .achievement-card.unlocked .achievement-icon {
+        background: var(--success-color);
+    }
+
+    .achievement-title {
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 0.5rem;
+    }
+
+    .achievement-description {
+        font-size: 0.875rem;
+        color: var(--dark-text-secondary);
+    }
+
+    .recent-activity {
+        background: var(--dark-surface);
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-bottom: 1px solid var(--dark-border);
+        transition: all 0.3s ease;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-item:hover {
+        background: var(--dark-card);
+        border-radius: 8px;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-text {
+        font-weight: 500;
+        color: var(--dark-text);
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-time {
+        font-size: 0.875rem;
+        color: var(--dark-text-secondary);
+    }
+
+    @media (max-width: 768px) {
+        .profile-content {
+            grid-template-columns: 1fr;
+        }
+        
+        .profile-stats {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .achievement-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <h1 class="profile-name">{{ user.get_full_name|default:user.username }}</h1>
+            <p class="profile-username">@{{ user.username }}</p>
+            <div class="profile-stats">
+                <div class="profile-stat">
+                    <span class="stat-number">24</span>
+                    <span class="stat-label">Problems Solved</span>
+                </div>
+                <div class="profile-stat">
+                    <span class="stat-number">156</span>
+                    <span class="stat-label">Submissions</span>
+                </div>
+                <div class="profile-stat">
+                    <span class="stat-number">89%</span>
+                    <span class="stat-label">Success Rate</span>
+                </div>
+                <div class="profile-stat">
+                    <span class="stat-number">15</span>
+                    <span class="stat-label">Day Streak</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <!-- Profile Sidebar -->
+            <div class="profile-sidebar">
+                <div class="sidebar-section">
+                    <h5 class="sidebar-title">Quick Actions</h5>
+                    <a href="{% url 'home:problems' %}" class="sidebar-item">
+                        <i class="fas fa-tasks"></i>
+                        Browse Problems
+                    </a>
+                    <a href="{% url 'home:dashboard' %}" class="sidebar-item">
+                        <i class="fas fa-chart-line"></i>
+                        View Dashboard
+                    </a>
+                </div>
+
+                <div class="sidebar-section">
+                    <h5 class="sidebar-title">Account</h5>
+                    <a href="#" class="sidebar-item">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <i class="fas fa-bell"></i>
+                        Notifications
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <i class="fas fa-shield-alt"></i>
+                        Privacy
+                    </a>
+                </div>
+            </div>
+
+            <!-- Profile Main Content -->
+            <div class="profile-main">
+                <!-- Achievements -->
+                <h3 class="section-title">
+                    <i class="fas fa-trophy"></i>
+                    Achievements
+                </h3>
+                <div class="achievement-grid">
+                    <div class="achievement-card unlocked">
+                        <div class="achievement-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h5 class="achievement-title">First Problem</h5>
+                        <p class="achievement-description">Solved your first coding problem</p>
+                    </div>
+                    <div class="achievement-card unlocked">
+                        <div class="achievement-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <h5 class="achievement-title">Streak Master</h5>
+                        <p class="achievement-description">Maintained a 7-day solving streak</p>
+                    </div>
+                    <div class="achievement-card">
+                        <div class="achievement-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h5 class="achievement-title">Problem Master</h5>
+                        <p class="achievement-description">Solve 100 problems</p>
+                    </div>
+                    <div class="achievement-card">
+                        <div class="achievement-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h5 class="achievement-title">Speed Demon</h5>
+                        <p class="achievement-description">Solve 5 problems in one day</p>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <h3 class="section-title">
+                    <i class="fas fa-history"></i>
+                    Recent Activity
+                </h3>
+                <div class="recent-activity">
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">Solved "Two Sum" problem</div>
+                            <div class="activity-time">2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">Solved "Valid Parentheses" problem</div>
+                            <div class="activity-time">1 day ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-times"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">Attempted "Merge Sorted Array" problem</div>
+                            <div class="activity-time">2 days ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">Solved "Palindrome Number" problem</div>
+                            <div class="activity-time">3 days ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

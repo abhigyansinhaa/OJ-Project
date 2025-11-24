@@ -1,0 +1,589 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Dashboard - EvalX{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-container {
+        padding: 2rem 0;
+        min-height: calc(100vh - 80px);
+    }
+
+    .welcome-section {
+        background: linear-gradient(135deg, var(--dark-card) 0%, var(--dark-surface) 100%);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .welcome-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--dark-text);
+    }
+
+    .welcome-subtitle {
+        color: var(--dark-text-secondary);
+        font-size: 1.1rem;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .quick-action {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: var(--dark-text);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .quick-action::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .quick-action:hover::before {
+        transform: scaleX(1);
+    }
+
+    .quick-action:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--primary-color);
+        text-decoration: none;
+        color: var(--dark-text);
+    }
+
+    .quick-action-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .quick-action-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--dark-text);
+    }
+
+    .quick-action-text {
+        color: var(--dark-text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--primary-color);
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.25rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .stat-label {
+        color: var(--dark-text-secondary);
+        font-weight: 500;
+    }
+
+    .dashboard-content {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .sidebar {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        height: fit-content;
+    }
+
+    .sidebar-section {
+        margin-bottom: 2rem;
+    }
+
+    .sidebar-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .sidebar-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--dark-border);
+    }
+
+    .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 0;
+        color: var(--dark-text-secondary);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-radius: 8px;
+    }
+
+    .sidebar-item:hover {
+        color: var(--primary-color);
+        background: rgba(99, 102, 241, 0.1);
+        padding-left: 0.5rem;
+        text-decoration: none;
+    }
+
+    .main-content {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--dark-text);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .progress-section {
+        margin-bottom: 2rem;
+    }
+
+    .progress-item {
+        margin-bottom: 1rem;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        color: var(--dark-text);
+        font-weight: 500;
+    }
+
+    .progress-bar {
+        height: 8px;
+        background: var(--dark-surface);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+
+    .recent-submissions {
+        background: var(--dark-surface);
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+
+    .submission-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-bottom: 1px solid var(--dark-border);
+        transition: all 0.3s ease;
+    }
+
+    .submission-item:last-child {
+        border-bottom: none;
+    }
+
+    .submission-item:hover {
+        background: var(--dark-card);
+        border-radius: 8px;
+    }
+
+    .submission-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+    }
+
+    .submission-content {
+        flex: 1;
+    }
+
+    .submission-text {
+        font-weight: 500;
+        color: var(--dark-text);
+        margin-bottom: 0.25rem;
+    }
+
+    .submission-time {
+        font-size: 0.875rem;
+        color: var(--dark-text-secondary);
+    }
+
+    .recommended-problems {
+        background: var(--dark-surface);
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+
+    .problem-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-bottom: 1px solid var(--dark-border);
+        transition: all 0.3s ease;
+    }
+
+    .problem-item:last-child {
+        border-bottom: none;
+    }
+
+    .problem-item:hover {
+        background: var(--dark-card);
+        border-radius: 8px;
+    }
+
+    .problem-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--success-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+    }
+
+    .problem-content {
+        flex: 1;
+    }
+
+    .problem-title {
+        font-weight: 500;
+        color: var(--dark-text);
+        margin-bottom: 0.25rem;
+    }
+
+    .problem-difficulty {
+        font-size: 0.875rem;
+        color: var(--dark-text-secondary);
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-content {
+            grid-template-columns: 1fr;
+        }
+        
+        .quick-actions {
+            grid-template-columns: 1fr;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1 class="welcome-title">Welcome back, {{ user.get_full_name|default:user.username }}! 👋</h1>
+            <p class="welcome-subtitle">Ready to tackle some programming challenges on EvalX?</p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="{% url 'home:problems' %}" class="quick-action">
+                <div class="quick-action-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <h4 class="quick-action-title">Browse Problems</h4>
+                <p class="quick-action-text">Find new challenges</p>
+            </a>
+            <a href="{% url 'home:profile' %}" class="quick-action">
+                <div class="quick-action-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h4 class="quick-action-title">View Profile</h4>
+                <p class="quick-action-text">Check your progress</p>
+            </a>
+            <a href="#" class="quick-action">
+                <div class="quick-action-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h4 class="quick-action-title">Leaderboard</h4>
+                <p class="quick-action-text">See rankings</p>
+            </a>
+        </div>
+
+        <!-- Statistics Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <span class="stat-number">24</span>
+                <span class="stat-label">Problems Solved</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <span class="stat-number">156</span>
+                <span class="stat-label">Total Submissions</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <span class="stat-number">89%</span>
+                <span class="stat-label">Success Rate</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <span class="stat-number">15</span>
+                <span class="stat-label">Day Streak</span>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <h6 class="sidebar-title">Navigation</h6>
+                    <a href="{% url 'home:problems' %}" class="sidebar-item">
+                        <i class="fas fa-tasks"></i>
+                        Problems
+                    </a>
+                    <a href="{% url 'home:profile' %}" class="sidebar-item">
+                        <i class="fas fa-user"></i>
+                        Profile
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <i class="fas fa-trophy"></i>
+                        Leaderboard
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <i class="fas fa-calendar"></i>
+                        Contests
+                    </a>
+                </div>
+
+                <div class="sidebar-section">
+                    <h6 class="sidebar-title">Account</h6>
+                    <a href="#" class="sidebar-item">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <i class="fas fa-question-circle"></i>
+                        Help
+                    </a>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Learning Progress -->
+                <div class="progress-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-chart-line"></i>
+                        Learning Progress
+                    </h3>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>Easy Problems</span>
+                            <span>8/20</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 40%"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>Medium Problems</span>
+                            <span>12/30</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 40%"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>Hard Problems</span>
+                            <span>4/15</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 27%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Submissions -->
+                <h3 class="section-title">
+                    <i class="fas fa-history"></i>
+                    Recent Submissions
+                </h3>
+                <div class="recent-submissions">
+                    <div class="submission-item">
+                        <div class="submission-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="submission-content">
+                            <div class="submission-text">Solved "Two Sum" problem</div>
+                            <div class="submission-time">2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="submission-item">
+                        <div class="submission-icon">
+                            <i class="fas fa-times"></i>
+                        </div>
+                        <div class="submission-content">
+                            <div class="submission-text">Attempted "Valid Parentheses" problem</div>
+                            <div class="submission-time">1 day ago</div>
+                        </div>
+                    </div>
+                    <div class="submission-item">
+                        <div class="submission-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="submission-content">
+                            <div class="submission-text">Solved "Palindrome Number" problem</div>
+                            <div class="submission-time">2 days ago</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommended Problems -->
+                <h3 class="section-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Recommended Problems
+                </h3>
+                <div class="recommended-problems">
+                    <div class="problem-item">
+                        <div class="problem-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="problem-content">
+                            <div class="problem-title">Merge Sorted Array</div>
+                            <div class="problem-difficulty">Medium • Arrays</div>
+                        </div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="problem-content">
+                            <div class="problem-title">Valid Anagram</div>
+                            <div class="problem-difficulty">Easy • Strings</div>
+                        </div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="problem-content">
+                            <div class="problem-title">Climbing Stairs</div>
+                            <div class="problem-difficulty">Easy • Dynamic Programming</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

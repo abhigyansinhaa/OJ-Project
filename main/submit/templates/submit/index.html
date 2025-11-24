@@ -1,6 +1,639 @@
-<h1>Code Compiler</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Run Code</button>
-</form>
+{% extends 'home/base.html' %}
+
+{% block title %}Solve Problem - EvalX{% endblock %}
+
+{% block extra_css %}
+<style>
+    .solve-container {
+        padding: 2rem 0;
+        min-height: calc(100vh - 80px);
+    }
+
+    .problem-header {
+        background: linear-gradient(135deg, var(--dark-card) 0%, var(--dark-surface) 100%);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .problem-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .problem-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 1rem;
+    }
+
+    .problem-description {
+        color: var(--dark-text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .problem-meta {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--dark-text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .difficulty-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .difficulty-easy {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--success-color);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .difficulty-medium {
+        background: rgba(245, 158, 11, 0.2);
+        color: var(--warning-color);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .difficulty-hard {
+        background: rgba(239, 68, 68, 0.2);
+        color: var(--danger-color);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .solve-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .problem-details {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--dark-border);
+    }
+
+    .example-section {
+        margin-bottom: 2rem;
+    }
+
+    .example-item {
+        background: var(--dark-surface);
+        border: 1px solid var(--dark-border);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .example-label {
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 0.5rem;
+    }
+
+    .example-content {
+        background: var(--dark-bg);
+        border: 1px solid var(--dark-border);
+        border-radius: 6px;
+        padding: 0.75rem;
+        font-family: 'Fira Code', monospace;
+        color: var(--dark-text);
+        white-space: pre-wrap;
+        overflow-x: auto;
+    }
+
+    .constraints-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .constraints-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--dark-border);
+        color: var(--dark-text-secondary);
+    }
+
+    .constraints-list li:last-child {
+        border-bottom: none;
+    }
+
+    .constraints-list li::before {
+        content: '•';
+        color: var(--primary-color);
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+
+    .solution-form {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 500;
+        color: var(--dark-text);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 0.75rem;
+        background: var(--dark-surface);
+        border: 1px solid var(--dark-border);
+        color: var(--dark-text);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+    }
+
+    .code-editor {
+        background: var(--dark-bg);
+        border: 1px solid var(--dark-border);
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+
+    .editor-header {
+        background: var(--dark-surface);
+        border-bottom: 1px solid var(--dark-border);
+        padding: 0.75rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .editor-title {
+        font-weight: 500;
+        color: var(--dark-text);
+        font-size: 0.9rem;
+    }
+
+    .editor-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-editor {
+        background: transparent;
+        border: 1px solid var(--dark-border);
+        color: var(--dark-text-secondary);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-editor:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+
+    .code-textarea {
+        width: 100%;
+        min-height: 400px;
+        background: var(--dark-bg);
+        border: none;
+        color: var(--dark-text);
+        font-family: 'Fira Code', monospace;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        padding: 1rem;
+        resize: vertical;
+    }
+
+    .code-textarea:focus {
+        outline: none;
+    }
+
+    .input-output-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .io-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .io-textarea {
+        width: 100%;
+        min-height: 120px;
+        background: var(--dark-surface);
+        border: 1px solid var(--dark-border);
+        color: var(--dark-text);
+        border-radius: 8px;
+        padding: 0.75rem;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.9rem;
+        resize: vertical;
+    }
+
+    .io-textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+    }
+
+    .btn-submit {
+        width: 100%;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        color: white;
+        padding: 1rem;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+
+    .btn-submit.loading {
+        pointer-events: none;
+    }
+
+    .btn-submit.loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid transparent;
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .hint-section {
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    .hint-title {
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .hint-text {
+        color: var(--dark-text-secondary);
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+        .solve-content {
+            grid-template-columns: 1fr;
+        }
+        
+        .input-output-section {
+            grid-template-columns: 1fr;
+        }
+        
+        .problem-meta {
+            flex-direction: column;
+            gap: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="solve-container">
+    <div class="container">
+        <!-- Problem Header -->
+        <div class="problem-header">
+            <h1 class="problem-title">Two Sum</h1>
+            <p class="problem-description">
+                Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+                You may assume that each input would have exactly one solution, and you may not use the same element twice.
+                You can return the answer in any order.
+            </p>
+            <div class="problem-meta">
+                <div class="meta-item">
+                    <i class="fas fa-tag"></i>
+                    <span>Arrays</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>15 min</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-users"></i>
+                    <span>15.2k solved</span>
+                </div>
+                <span class="difficulty-badge difficulty-easy">Easy</span>
+            </div>
+        </div>
+
+        <div class="solve-content">
+            <!-- Problem Details -->
+            <div class="problem-details">
+                <div class="example-section">
+                    <h3 class="section-title">Examples</h3>
+                    <div class="example-item">
+                        <div class="example-label">Example 1:</div>
+                        <div class="example-content">Input: nums = [2,7,11,15], target = 9
+Output: [0,1]
+Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-label">Example 2:</div>
+                        <div class="example-content">Input: nums = [3,2,4], target = 6
+Output: [1,2]</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-label">Example 3:</div>
+                        <div class="example-content">Input: nums = [3,3], target = 6
+Output: [0,1]</div>
+                    </div>
+                </div>
+
+                <div class="constraints-section">
+                    <h3 class="section-title">Constraints</h3>
+                    <ul class="constraints-list">
+                        <li>2 ≤ nums.length ≤ 10⁴</li>
+                        <li>-10⁹ ≤ nums[i] ≤ 10⁹</li>
+                        <li>-10⁹ ≤ target ≤ 10⁹</li>
+                        <li>Only one valid answer exists.</li>
+                    </ul>
+                </div>
+
+                <div class="hint-section">
+                    <div class="hint-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Hint
+                    </div>
+                    <div class="hint-text">
+                        Try using a hash table to store the numbers you've seen so far. For each number, check if the complement (target - current number) exists in the hash table.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solution Form -->
+            <div class="solution-form">
+                <h3 class="section-title">Your Solution</h3>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="language">Programming Language</label>
+                        <select class="form-select" id="language" name="language" required>
+                            <option value="">Select Language</option>
+                            <option value="python">Python</option>
+                            <option value="cpp">C++</option>
+                            <option value="java">Java</option>
+                            <option value="javascript">JavaScript</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Code</label>
+                        <div class="code-editor">
+                            <div class="editor-header">
+                                <span class="editor-title">main.py</span>
+                                <div class="editor-actions">
+                                    <button type="button" class="btn-editor" onclick="clearCode()">Clear</button>
+                                    <button type="button" class="btn-editor" onclick="formatCode()">Format</button>
+                                </div>
+                            </div>
+                            <textarea class="code-textarea" name="code" id="code" placeholder="Write your solution here..." required>def twoSum(nums, target):
+    # Your solution here
+    pass</textarea>
+                        </div>
+                    </div>
+
+                    <div class="input-output-section">
+                        <div class="io-group">
+                            <label class="form-label" for="input_data">Input (Optional)</label>
+                            <textarea class="io-textarea" name="input_data" id="input_data" placeholder="Enter test input...">[2,7,11,15]
+9</textarea>
+                        </div>
+                        <div class="io-group">
+                            <label class="form-label" for="expected_output">Expected Output (Optional)</label>
+                            <textarea class="io-textarea" name="expected_output" id="expected_output" placeholder="Enter expected output...">[0,1]</textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="fas fa-play me-2"></i>
+                        Submit Solution
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Language change handler
+    document.getElementById('language').addEventListener('change', function() {
+        const language = this.value;
+        const codeTextarea = document.getElementById('code');
+        const editorTitle = document.querySelector('.editor-title');
+        
+        // Update editor title
+        switch(language) {
+            case 'python':
+                editorTitle.textContent = 'main.py';
+                if (codeTextarea.value.includes('def twoSum')) {
+                    codeTextarea.value = `def twoSum(nums, target):
+    # Your solution here
+    pass`;
+                }
+                break;
+            case 'cpp':
+                editorTitle.textContent = 'main.cpp';
+                if (codeTextarea.value.includes('def twoSum')) {
+                    codeTextarea.value = `#include <vector>
+#include <unordered_map>
+using namespace std;
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        // Your solution here
+    }
+};`;
+                }
+                break;
+            case 'java':
+                editorTitle.textContent = 'Solution.java';
+                if (codeTextarea.value.includes('def twoSum')) {
+                    codeTextarea.value = `class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        // Your solution here
+    }
+}`;
+                }
+                break;
+            case 'javascript':
+                editorTitle.textContent = 'main.js';
+                if (codeTextarea.value.includes('def twoSum')) {
+                    codeTextarea.value = `/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function(nums, target) {
+    // Your solution here
+};`;
+                }
+                break;
+        }
+    });
+
+    // Clear code function
+    function clearCode() {
+        const language = document.getElementById('language').value;
+        const codeTextarea = document.getElementById('code');
+        
+        if (language === 'python') {
+            codeTextarea.value = `def twoSum(nums, target):
+    # Your solution here
+    pass`;
+        } else if (language === 'cpp') {
+            codeTextarea.value = `#include <vector>
+#include <unordered_map>
+using namespace std;
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        // Your solution here
+    }
+};`;
+        } else if (language === 'java') {
+            codeTextarea.value = `class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        // Your solution here
+    }
+}`;
+        } else if (language === 'javascript') {
+            codeTextarea.value = `/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function(nums, target) {
+    // Your solution here
+};`;
+        } else {
+            codeTextarea.value = '';
+        }
+    }
+
+    // Format code function (basic)
+    function formatCode() {
+        const codeTextarea = document.getElementById('code');
+        let code = codeTextarea.value;
+        
+        // Basic formatting - add proper indentation
+        code = code.replace(/\n\s*/g, '\n    ');
+        codeTextarea.value = code;
+    }
+
+    // Form submission handler
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const language = document.getElementById('language').value;
+        const code = document.getElementById('code').value.trim();
+        
+        if (!language) {
+            e.preventDefault();
+            alert('Please select a programming language');
+            return;
+        }
+        
+        if (!code) {
+            e.preventDefault();
+            alert('Please write your solution');
+            return;
+        }
+        
+        // Show loading state
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.classList.add('loading');
+        submitBtn.textContent = '';
+    });
+
+    // Auto-resize textarea
+    document.getElementById('code').addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.max(400, this.scrollHeight) + 'px';
+    });
+</script>
+{% endblock %}
