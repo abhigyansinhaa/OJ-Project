@@ -27,34 +27,41 @@
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        background: linear-gradient(90deg, 
+            {% if submission.status == 'accepted' %}var(--success-color), #059669{% else %}var(--danger-color), #dc2626{% endif %}
+        );
     }
 
     .result-title {
         font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 1rem;
+        color: var(--dark-text);
     }
 
     .result-status {
-        font-size: 1.25rem;
+        font-size: 1.5rem;
         margin-bottom: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
     }
 
     .status-accepted {
+        background: rgba(16, 185, 129, 0.2);
         color: var(--success-color);
     }
 
-    .status-wrong-answer {
+    .status-wrong_answer, .status-tle, .status-rte, .status-ce, .status-mle {
+        background: rgba(239, 68, 68, 0.2);
         color: var(--danger-color);
     }
 
-    .status-time-limit {
+    .status-pending, .status-running {
+        background: rgba(245, 158, 11, 0.2);
         color: var(--warning-color);
-    }
-
-    .status-compilation-error {
-        color: var(--danger-color);
     }
 
     .result-meta {
@@ -92,6 +99,9 @@
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
         border-bottom: 2px solid var(--dark-border);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .test-case {
@@ -154,11 +164,13 @@
         border: 1px solid var(--dark-border);
         border-radius: 6px;
         padding: 0.75rem;
-        font-family: 'Fira Code', monospace;
+        font-family: 'Fira Code', 'Consolas', monospace;
         color: var(--dark-text);
         white-space: pre-wrap;
         overflow-x: auto;
         font-size: 0.875rem;
+        max-height: 150px;
+        overflow-y: auto;
     }
 
     .performance-metrics {
@@ -190,27 +202,47 @@
         letter-spacing: 0.5px;
     }
 
-    .code-review {
+    .code-section {
         background: var(--dark-surface);
         border: 1px solid var(--dark-border);
         border-radius: 8px;
-        padding: 1rem;
         margin-top: 1rem;
     }
 
-    .review-title {
-        font-weight: 600;
-        color: var(--dark-text);
-        margin-bottom: 0.5rem;
+    .code-header {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--dark-border);
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        gap: 0.5rem;
     }
 
-    .review-text {
-        color: var(--dark-text-secondary);
-        font-size: 0.9rem;
-        line-height: 1.5;
+    .code-title {
+        font-weight: 500;
+        color: var(--dark-text);
+    }
+
+    .code-content {
+        padding: 1rem;
+        font-family: 'Fira Code', 'Consolas', monospace;
+        font-size: 0.875rem;
+        color: var(--dark-text);
+        white-space: pre-wrap;
+        overflow-x: auto;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .error-message {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 8px;
+        padding: 1rem;
+        color: var(--danger-color);
+        font-family: 'Fira Code', 'Consolas', monospace;
+        font-size: 0.875rem;
+        white-space: pre-wrap;
+        margin-top: 1rem;
     }
 
     .action-buttons {
@@ -267,7 +299,9 @@
 
     .progress-fill {
         height: 100%;
-        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        background: linear-gradient(90deg, 
+            {% if submission.status == 'accepted' %}var(--success-color), #059669{% else %}var(--primary-color), var(--secondary-color){% endif %}
+        );
         transition: width 0.3s ease;
     }
 
@@ -293,27 +327,37 @@
     <div class="container">
         <!-- Result Header -->
         <div class="result-header">
-            <h1 class="result-title">Submission Result</h1>
-            <div class="result-status status-accepted">
-                <i class="fas fa-check-circle me-2"></i>
-                Accepted
+            <h1 class="result-title">{{ submission.problem.title }}</h1>
+            <div class="result-status status-{{ submission.status }}">
+                {% if submission.status == 'accepted' %}
+                    <i class="fas fa-check-circle"></i>
+                {% elif submission.status == 'pending' or submission.status == 'running' %}
+                    <i class="fas fa-spinner fa-spin"></i>
+                {% else %}
+                    <i class="fas fa-times-circle"></i>
+                {% endif %}
+                {{ submission.get_status_display }}
             </div>
             <div class="result-meta">
+                {% if submission.runtime_ms %}
                 <div class="meta-item">
                     <i class="fas fa-clock"></i>
-                    <span>Runtime: 24ms</span>
+                    <span>Runtime: {{ submission.runtime_ms }}ms</span>
                 </div>
+                {% endif %}
+                {% if submission.memory_kb %}
                 <div class="meta-item">
                     <i class="fas fa-memory"></i>
-                    <span>Memory: 14.2MB</span>
+                    <span>Memory: {{ submission.memory_kb }}KB</span>
                 </div>
+                {% endif %}
                 <div class="meta-item">
                     <i class="fas fa-code"></i>
-                    <span>Language: Python</span>
+                    <span>Language: {{ submission.get_language_display }}</span>
                 </div>
                 <div class="meta-item">
                     <i class="fas fa-calendar"></i>
-                    <span>Submitted: Just now</span>
+                    <span>Submitted: {{ submission.submitted_at|timesince }} ago</span>
                 </div>
             </div>
         </div>
@@ -322,145 +366,121 @@
             <!-- Test Results -->
             <div class="result-section">
                 <h3 class="section-title">
-                    <i class="fas fa-vial me-2"></i>
+                    <i class="fas fa-vial"></i>
                     Test Results
                 </h3>
                 
+                {% for result in submission.test_results.all %}
                 <div class="test-case">
                     <div class="test-case-header">
-                        <span class="test-case-title">Test Case 1</span>
-                        <span class="test-case-status test-passed">Passed</span>
+                        <span class="test-case-title">
+                            {% if result.test_case.is_sample %}Sample{% else %}Hidden{% endif %} Test {{ forloop.counter }}
+                        </span>
+                        <span class="test-case-status {% if result.status == 'accepted' %}test-passed{% else %}test-failed{% endif %}">
+                            {{ result.get_status_display }}
+                        </span>
                     </div>
+                    
+                    {% if result.test_case.is_sample %}
                     <div class="test-input">
                         <div class="test-label">Input:</div>
-                        <div class="test-content">nums = [2, 7, 11, 15]
-target = 9</div>
+                        <div class="test-content">{{ result.test_case.input_data }}</div>
                     </div>
                     <div class="test-output">
                         <div class="test-label">Your Output:</div>
-                        <div class="test-content">[0, 1]</div>
+                        <div class="test-content">{{ result.actual_output|default:"(no output)" }}</div>
                     </div>
                     <div class="test-expected">
                         <div class="test-label">Expected:</div>
-                        <div class="test-content">[0, 1]</div>
+                        <div class="test-content">{{ result.test_case.expected_output }}</div>
                     </div>
+                    {% endif %}
+                    
+                    {% if result.error_message %}
+                    <div class="error-message">{{ result.error_message }}</div>
+                    {% endif %}
+                    
+                    {% if result.runtime_ms %}
+                    <div style="margin-top: 0.5rem; color: var(--dark-text-secondary); font-size: 0.875rem;">
+                        <i class="fas fa-clock"></i> {{ result.runtime_ms }}ms
+                    </div>
+                    {% endif %}
                 </div>
+                {% empty %}
+                <p style="color: var(--dark-text-secondary);">No test results available yet.</p>
+                {% endfor %}
 
-                <div class="test-case">
-                    <div class="test-case-header">
-                        <span class="test-case-title">Test Case 2</span>
-                        <span class="test-case-status test-passed">Passed</span>
-                    </div>
-                    <div class="test-input">
-                        <div class="test-label">Input:</div>
-                        <div class="test-content">nums = [3, 2, 4]
-target = 6</div>
-                    </div>
-                    <div class="test-output">
-                        <div class="test-label">Your Output:</div>
-                        <div class="test-content">[1, 2]</div>
-                    </div>
-                    <div class="test-expected">
-                        <div class="test-label">Expected:</div>
-                        <div class="test-content">[1, 2]</div>
-                    </div>
-                </div>
-
-                <div class="test-case">
-                    <div class="test-case-header">
-                        <span class="test-case-title">Test Case 3</span>
-                        <span class="test-case-status test-passed">Passed</span>
-                    </div>
-                    <div class="test-input">
-                        <div class="test-label">Input:</div>
-                        <div class="test-content">nums = [3, 3]
-target = 6</div>
-                    </div>
-                    <div class="test-output">
-                        <div class="test-label">Your Output:</div>
-                        <div class="test-content">[0, 1]</div>
-                    </div>
-                    <div class="test-expected">
-                        <div class="test-label">Expected:</div>
-                        <div class="test-content">[0, 1]</div>
-                    </div>
-                </div>
-
+                {% if submission.tests_total > 0 %}
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: 100%;"></div>
+                    <div class="progress-fill" style="width: {% widthratio submission.tests_passed submission.tests_total 100 %}%;"></div>
                 </div>
                 <div style="text-align: center; color: var(--dark-text-secondary); font-size: 0.9rem;">
-                    3/3 test cases passed
+                    {{ submission.tests_passed }}/{{ submission.tests_total }} test cases passed
                 </div>
+                {% endif %}
             </div>
 
-            <!-- Performance & Analysis -->
+            <!-- Code & Performance -->
             <div class="result-section">
                 <h3 class="section-title">
-                    <i class="fas fa-chart-line me-2"></i>
-                    Performance & Analysis
+                    <i class="fas fa-chart-line"></i>
+                    Performance & Code
                 </h3>
 
                 <div class="performance-metrics">
                     <div class="metric-card">
-                        <div class="metric-value">24ms</div>
+                        <div class="metric-value">{{ submission.runtime_ms|default:"--" }}ms</div>
                         <div class="metric-label">Runtime</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-value">14.2MB</div>
-                        <div class="metric-label">Memory</div>
+                        <div class="metric-value">{{ submission.tests_passed }}/{{ submission.tests_total }}</div>
+                        <div class="metric-label">Tests Passed</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-value">100%</div>
+                        <div class="metric-value">
+                            {% if submission.tests_total > 0 %}
+                                {% widthratio submission.tests_passed submission.tests_total 100 %}%
+                            {% else %}
+                                --
+                            {% endif %}
+                        </div>
                         <div class="metric-label">Success Rate</div>
                     </div>
-                    <div class="metric-card">
-                        <div class="metric-value">O(n)</div>
-                        <div class="metric-label">Time Complexity</div>
-                    </div>
                 </div>
 
-                <div class="code-review">
-                    <div class="review-title">
-                        <i class="fas fa-star"></i>
-                        Code Quality
-                    </div>
-                    <div class="review-text">
-                        Excellent solution! Your code is clean, readable, and follows best practices. 
-                        The hash table approach is optimal for this problem with O(n) time complexity.
-                    </div>
+                {% if submission.error_message %}
+                <div class="error-message">
+                    <strong>Error:</strong><br>
+                    {{ submission.error_message }}
                 </div>
+                {% endif %}
 
-                <div class="code-review">
-                    <div class="review-title">
-                        <i class="fas fa-lightbulb"></i>
-                        Suggestions
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">Your Code ({{ submission.get_language_display }})</span>
                     </div>
-                    <div class="review-text">
-                        Consider adding input validation and edge case handling for production code. 
-                        Your current solution handles the problem constraints perfectly.
-                    </div>
+                    <div class="code-content">{{ submission.code }}</div>
                 </div>
             </div>
         </div>
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-            <a href="{% url 'home:problems' %}" class="btn-action btn-primary">
+            <a href="{% url 'problems:problem_detail' submission.problem.slug %}" class="btn-action btn-primary">
+                <i class="fas fa-redo"></i>
+                Try Again
+            </a>
+            <a href="{% url 'problems:problem_list' %}" class="btn-action btn-secondary">
                 <i class="fas fa-tasks"></i>
-                Try Another Problem
+                More Problems
             </a>
-            <a href="#" class="btn-action btn-secondary">
-                <i class="fas fa-share"></i>
-                Share Solution
-            </a>
-            <a href="#" class="btn-action btn-secondary">
-                <i class="fas fa-download"></i>
-                Download Code
+            <a href="{% url 'submit:submission_history' %}" class="btn-action btn-secondary">
+                <i class="fas fa-history"></i>
+                Submission History
             </a>
             <a href="{% url 'home:dashboard' %}" class="btn-action btn-secondary">
                 <i class="fas fa-chart-line"></i>
-                View Dashboard
+                Dashboard
             </a>
         </div>
     </div>

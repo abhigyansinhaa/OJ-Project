@@ -343,27 +343,44 @@
         <form method="post">
             {% csrf_token %}
             
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" style="margin-bottom: 1rem; padding: 1rem; border-radius: 8px; background: {% if message.tags == 'success' %}rgba(16, 185, 129, 0.2){% elif message.tags == 'info' %}rgba(99, 102, 241, 0.2){% else %}rgba(239, 68, 68, 0.2){% endif %}; color: {% if message.tags == 'success' %}var(--success-color){% elif message.tags == 'info' %}var(--primary-color){% else %}var(--danger-color){% endif %}; border: 1px solid {% if message.tags == 'success' %}rgba(16, 185, 129, 0.3){% elif message.tags == 'info' %}rgba(99, 102, 241, 0.3){% else %}rgba(239, 68, 68, 0.3){% endif %};">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
             <div class="form-group">
-                <label class="form-label" for="username">Username</label>
+                <label class="form-label" for="id_username">Username</label>
                 <div class="input-group">
                     <i class="fas fa-user input-icon"></i>
-                    <input type="text" class="form-control input-with-icon" id="username" name="username" required>
+                    {{ form.username }}
                 </div>
+                {% if form.username.errors %}
+                    <small style="color: var(--danger-color);">{{ form.username.errors.0 }}</small>
+                {% endif %}
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="password">Password</label>
+                <label class="form-label" for="id_password">Password</label>
                 <div class="input-group">
                     <i class="fas fa-lock input-icon"></i>
-                    <input type="password" class="form-control input-with-icon" id="password" name="password" required>
+                    {{ form.password }}
                     <button type="button" class="password-toggle" onclick="togglePassword()">
                         <i class="fas fa-eye" id="passwordIcon"></i>
                     </button>
                 </div>
+                {% if form.password.errors %}
+                    <small style="color: var(--danger-color);">{{ form.password.errors.0 }}</small>
+                {% endif %}
+                {% if form.non_field_errors %}
+                    <small style="color: var(--danger-color);">{{ form.non_field_errors.0 }}</small>
+                {% endif %}
             </div>
 
             <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="remember">
+                <input type="checkbox" class="form-check-input" id="remember" name="remember">
                 <label class="form-check-label" for="remember">
                     Remember me
                 </label>
@@ -398,7 +415,7 @@
 
 <script>
     function togglePassword() {
-        const passwordInput = document.getElementById('password');
+        const passwordInput = document.getElementById('id_password');
         const passwordIcon = document.getElementById('passwordIcon');
         
         if (passwordInput.type === 'password') {

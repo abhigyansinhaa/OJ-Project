@@ -1,97 +1,112 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from submit.forms import CodeSubmissionForm
-from django.conf import settings
-import os
-import uuid
-import subprocess
-from pathlib import Path
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from django.views.generic import DetailView, ListView
+from django.urls import reverse
+
+from submit.models import Submission, SubmissionTestResult, SubmissionStatus, LanguageChoice
+from submit.services.executor import execute_submission
+from problems.models import Problem
 
 
-def submit(request):
-    if request.method == "POST":
-        form = CodeSubmissionForm(request.POST)
-        if form.is_valid():
-            submission = form.save()
-            print(submission.language)
-            print(submission.code)
-            output = run_code(
-                submission.language, submission.code, submission.input_data
-            )
-            submission.output_data = output
-            submission.save()
-            return render(request, "submit/result.html", {"submission": submission})
-    else:
-        form = CodeSubmissionForm()
-    return render(request, "submit/index.html", {"form": form})
-
-
-def run_code(language, code, input_data):
-    project_path = Path(settings.BASE_DIR)
-    directories = ["codes", "inputs", "outputs"]
-
-    for directory in directories:
-        dir_path = project_path / directory
-        if not dir_path.exists():
-            dir_path.mkdir(parents=True, exist_ok=True)
-
-    codes_dir = project_path / "codes"
-    inputs_dir = project_path / "inputs"
-    outputs_dir = project_path / "outputs"
-
-    unique = str(uuid.uuid4())
-
-    code_file_name = f"{unique}.{language}"
-    input_file_name = f"{unique}.txt"
-    output_file_name = f"{unique}.txt"
-
-    code_file_path = codes_dir / code_file_name
-    input_file_path = inputs_dir / input_file_name
-    output_file_path = outputs_dir / output_file_name
-
-    with open(code_file_path, "w") as code_file:
-        code_file.write(code)
-
-    with open(input_file_path, "w") as input_file:
-        input_file.write(input_data)
-
-    with open(output_file_path, "w") as output_file:
-        pass  # This will create an empty file
-
-    if language == "cpp":
-        executable_path = codes_dir / unique
-        compile_result = subprocess.run(
-            ["clang++", str(code_file_path), "-o", str(executable_path)]
+@login_required
+def submit_solution(request, slug):
+    """Handle code submission for a problem."""
+    problem = get_object_or_404(Problem, slug=slug, is_active=True)
+    
+    if request.method == 'POST':
+        language = request.POST.get('language')
+        code = request.POST.get('code', '').strip()
+        
+        # Validate inputs
+        if not language or language not in dict(LanguageChoice.choices):
+            messages.error(request, 'Please select a valid programming language.')
+            return redirect('problems:problem_detail', slug=slug)
+        
+        if not code:
+            messages.error(request, 'Please provide your solution code.')
+            return redirect('problems:problem_detail', slug=slug)
+        
+        # Create submission
+        submission = Submission.objects.create(
+            user=request.user,
+            problem=problem,
+            language=language,
+            code=code,
+            status=SubmissionStatus.PENDING
         )
-        if compile_result.returncode == 0:
-            with open(input_file_path, "r") as input_file:
-                with open(output_file_path, "w") as output_file:
-                    subprocess.run(
-                        [str(executable_path)],
-                        stdin=input_file,
-                        stdout=output_file,
-                    )
-    elif language == "py":
-        # Code for executing Python script
-        with open(input_file_path, "r") as input_file:
-            with open(output_file_path, "w") as output_file:
-                subprocess.run(
-                    ["python3", str(code_file_path)],
-                    stdin=input_file,
-                    stdout=output_file,
-                )
-    elif language == "java":
-        # Code for executing Java program
-        with open(input_file_path, "r") as input_file:
-            with open(output_file_path, "w") as output_file:
-                subprocess.run(
-                    ["java", str(code_file_path)],
-                    stdin=input_file,
-                    stdout=output_file,
-                ) 
+        
+        # Execute the submission (synchronous for now, can be made async later)
+        execute_submission(submission.id)
+        
+        # Redirect to result page
+        return redirect('submit:submission_detail', pk=submission.id)
+    
+    return redirect('problems:problem_detail', slug=slug)
 
-    # Read the output from the output file
-    with open(output_file_path, "r") as output_file:
-        output_data = output_file.read()
 
-    return output_data
+class SubmissionDetailView(LoginRequiredMixin, DetailView):
+    """Display submission result with test case details."""
+    model = Submission
+    template_name = 'submit/result.html'
+    context_object_name = 'submission'
+
+    def get_queryset(self):
+        # Users can only view their own submissions
+        return Submission.objects.filter(user=self.request.user).select_related(
+            'problem', 'user'
+        ).prefetch_related('test_results__test_case')
+
+
+class SubmissionHistoryView(LoginRequiredMixin, ListView):
+    """Display user's submission history."""
+    model = Submission
+    template_name = 'submit/history.html'
+    context_object_name = 'submissions'
+    paginate_by = 20
+
+    def get_queryset(self):
+        queryset = Submission.objects.filter(
+            user=self.request.user
+        ).select_related('problem').order_by('-submitted_at')
+        
+        # Filter by problem
+        problem_slug = self.request.GET.get('problem')
+        if problem_slug:
+            queryset = queryset.filter(problem__slug=problem_slug)
+        
+        # Filter by status
+        status = self.request.GET.get('status')
+        if status and status in dict(SubmissionStatus.choices):
+            queryset = queryset.filter(status=status)
+        
+        # Filter by language
+        language = self.request.GET.get('language')
+        if language and language in dict(LanguageChoice.choices):
+            queryset = queryset.filter(language=language)
+        
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status_choices'] = SubmissionStatus.choices
+        context['language_choices'] = LanguageChoice.choices
+        context['current_status'] = self.request.GET.get('status', '')
+        context['current_language'] = self.request.GET.get('language', '')
+        context['current_problem'] = self.request.GET.get('problem', '')
+        
+        # Get user's problems for filter dropdown
+        context['user_problems'] = Problem.objects.filter(
+            submissions__user=self.request.user
+        ).distinct()
+        
+        return context
+
+
+# Legacy view for backward compatibility
+def submit(request):
+    """Legacy submission view - redirects to problems list."""
+    messages.info(request, 'Please select a problem to submit your solution.')
+    return redirect('problems:problem_list')

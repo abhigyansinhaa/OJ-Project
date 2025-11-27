@@ -1,0 +1,492 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Problems - EvalX{% endblock %}
+
+{% block extra_css %}
+<style>
+    .problems-container {
+        padding: 2rem 0;
+        min-height: calc(100vh - 80px);
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--dark-card) 0%, var(--dark-surface) 100%);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--dark-text);
+    }
+
+    .page-subtitle {
+        color: var(--dark-text-secondary);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .filters-section {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .filters-row {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .filter-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--dark-text);
+    }
+
+    .filter-select {
+        background: var(--dark-surface);
+        border: 1px solid var(--dark-border);
+        color: var(--dark-text);
+        border-radius: 8px;
+        padding: 0.5rem;
+        min-width: 120px;
+    }
+
+    .filter-select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+    }
+
+    .search-box {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .search-input {
+        background: var(--dark-surface);
+        border: 1px solid var(--dark-border);
+        color: var(--dark-text);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        width: 100%;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+    }
+
+    .problems-grid {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .problem-card {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .problem-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .problem-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .problem-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--primary-color);
+    }
+
+    .problem-card.solved {
+        border-left: 4px solid var(--success-color);
+    }
+
+    .problem-card.attempted {
+        border-left: 4px solid var(--warning-color);
+    }
+
+    .problem-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .problem-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 0.5rem;
+    }
+
+    .problem-title a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .problem-title a:hover {
+        color: var(--primary-color);
+    }
+
+    .problem-description {
+        color: var(--dark-text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .problem-meta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--dark-text-secondary);
+        font-size: 0.875rem;
+    }
+
+    .difficulty-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .difficulty-easy {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--success-color);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .difficulty-medium {
+        background: rgba(245, 158, 11, 0.2);
+        color: var(--warning-color);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .difficulty-hard {
+        background: rgba(239, 68, 68, 0.2);
+        color: var(--danger-color);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .tag-badge {
+        background: rgba(99, 102, 241, 0.2);
+        color: var(--primary-color);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+    }
+
+    .problem-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .btn-solve {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-solve:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
+        color: white;
+        text-decoration: none;
+    }
+
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .status-solved {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--success-color);
+    }
+
+    .status-attempted {
+        background: rgba(245, 158, 11, 0.2);
+        color: var(--warning-color);
+    }
+
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+
+    .page-link {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        color: var(--dark-text);
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .page-link:hover {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+        text-decoration: none;
+    }
+
+    .page-link.active {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+    .page-link.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--dark-text-secondary);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    @media (max-width: 768px) {
+        .filters-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .search-box {
+            min-width: auto;
+        }
+        
+        .problem-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .problem-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="problems-container">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Programming Problems</h1>
+            <p class="page-subtitle">
+                Choose from {{ page_obj.paginator.count }} carefully curated programming challenges. 
+                Start with easy problems and work your way up to advanced algorithms.
+            </p>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <form method="get" class="filters-row">
+                <div class="filter-group">
+                    <label class="filter-label">Difficulty</label>
+                    <select class="filter-select" name="difficulty" onchange="this.form.submit()">
+                        <option value="">All Levels</option>
+                        <option value="easy" {% if current_difficulty == 'easy' %}selected{% endif %}>Easy</option>
+                        <option value="medium" {% if current_difficulty == 'medium' %}selected{% endif %}>Medium</option>
+                        <option value="hard" {% if current_difficulty == 'hard' %}selected{% endif %}>Hard</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Category</label>
+                    <select class="filter-select" name="tag" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        {% for tag in tags %}
+                            <option value="{{ tag.slug }}" {% if current_tag == tag.slug %}selected{% endif %}>{{ tag.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select" name="status" onchange="this.form.submit()">
+                        <option value="">All Problems</option>
+                        <option value="solved" {% if current_status == 'solved' %}selected{% endif %}>Solved</option>
+                        <option value="attempted" {% if current_status == 'attempted' %}selected{% endif %}>Attempted</option>
+                        <option value="unsolved" {% if current_status == 'unsolved' %}selected{% endif %}>Unsolved</option>
+                    </select>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" class="search-input" name="search" placeholder="Search problems..." value="{{ search_query }}">
+                </div>
+            </form>
+        </div>
+
+        <!-- Problems Grid -->
+        <div class="problems-grid">
+            {% for problem in problems %}
+                <div class="problem-card {% if problem.id in solved_problem_ids %}solved{% elif problem.id in attempted_problem_ids %}attempted{% endif %}">
+                    <div class="problem-header">
+                        <div>
+                            <h3 class="problem-title">
+                                <a href="{% url 'problems:problem_detail' problem.slug %}">{{ problem.title }}</a>
+                            </h3>
+                            <span class="difficulty-badge difficulty-{{ problem.difficulty }}">{{ problem.get_difficulty_display }}</span>
+                            {% if problem.id in solved_problem_ids %}
+                                <span class="status-badge status-solved"><i class="fas fa-check"></i> Solved</span>
+                            {% elif problem.id in attempted_problem_ids %}
+                                <span class="status-badge status-attempted"><i class="fas fa-clock"></i> Attempted</span>
+                            {% endif %}
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="meta-item">
+                                <i class="fas fa-users"></i>
+                                <span>{{ problem.solve_count }} solved</span>
+                            </div>
+                            {% if problem.acceptance_rate > 0 %}
+                            <div class="meta-item">
+                                <i class="fas fa-percentage"></i>
+                                <span>{{ problem.acceptance_rate }}%</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <p class="problem-description">{{ problem.description|truncatewords:30 }}</p>
+                    
+                    <div class="problem-meta">
+                        {% for tag in problem.tags.all %}
+                            <span class="tag-badge">{{ tag.name }}</span>
+                        {% endfor %}
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>{{ problem.time_limit }}s</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-memory"></i>
+                            <span>{{ problem.memory_limit }}MB</span>
+                        </div>
+                    </div>
+                    
+                    <div class="problem-actions">
+                        <a href="{% url 'problems:problem_detail' problem.slug %}" class="btn-solve">
+                            <i class="fas fa-play"></i>
+                            Solve Problem
+                        </a>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h3>No problems found</h3>
+                    <p>Try adjusting your filters or search query.</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-container">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if current_difficulty %}&difficulty={{ current_difficulty }}{% endif %}{% if current_tag %}&tag={{ current_tag }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-link">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </a>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="page-link active">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}{% if current_difficulty %}&difficulty={{ current_difficulty }}{% endif %}{% if current_tag %}&tag={{ current_tag }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-link">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if current_difficulty %}&difficulty={{ current_difficulty }}{% endif %}{% if current_tag %}&tag={{ current_tag }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-link">
+                    Next <i class="fas fa-chevron-right"></i>
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+

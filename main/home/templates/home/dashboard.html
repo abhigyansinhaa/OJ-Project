@@ -384,7 +384,7 @@
 
         <!-- Quick Actions -->
         <div class="quick-actions">
-            <a href="{% url 'home:problems' %}" class="quick-action">
+            <a href="{% url 'problems:problem_list' %}" class="quick-action">
                 <div class="quick-action-icon">
                     <i class="fas fa-tasks"></i>
                 </div>
@@ -413,29 +413,29 @@
                 <div class="stat-icon">
                     <i class="fas fa-check"></i>
                 </div>
-                <span class="stat-number">24</span>
+                <span class="stat-number">{{ solved_problems }}</span>
                 <span class="stat-label">Problems Solved</span>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
                     <i class="fas fa-code"></i>
                 </div>
-                <span class="stat-number">156</span>
+                <span class="stat-number">{{ total_submissions }}</span>
                 <span class="stat-label">Total Submissions</span>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
                     <i class="fas fa-percentage"></i>
                 </div>
-                <span class="stat-number">89%</span>
+                <span class="stat-number">{{ success_rate }}%</span>
                 <span class="stat-label">Success Rate</span>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
-                    <i class="fas fa-fire"></i>
+                    <i class="fas fa-tasks"></i>
                 </div>
-                <span class="stat-number">15</span>
-                <span class="stat-label">Day Streak</span>
+                <span class="stat-number">{{ easy_solved|add:medium_solved|add:hard_solved }}</span>
+                <span class="stat-label">Unique Solved</span>
             </div>
         </div>
 
@@ -444,7 +444,7 @@
             <div class="sidebar">
                 <div class="sidebar-section">
                     <h6 class="sidebar-title">Navigation</h6>
-                    <a href="{% url 'home:problems' %}" class="sidebar-item">
+                    <a href="{% url 'problems:problem_list' %}" class="sidebar-item">
                         <i class="fas fa-tasks"></i>
                         Problems
                     </a>
@@ -486,28 +486,28 @@
                     <div class="progress-item">
                         <div class="progress-label">
                             <span>Easy Problems</span>
-                            <span>8/20</span>
+                            <span>{{ easy_solved }}/{{ easy_total }}</span>
                         </div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: 40%"></div>
+                            <div class="progress-fill" style="width: {% if easy_total > 0 %}{% widthratio easy_solved easy_total 100 %}{% else %}0{% endif %}%"></div>
                         </div>
                     </div>
                     <div class="progress-item">
                         <div class="progress-label">
                             <span>Medium Problems</span>
-                            <span>12/30</span>
+                            <span>{{ medium_solved }}/{{ medium_total }}</span>
                         </div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: 40%"></div>
+                            <div class="progress-fill" style="width: {% if medium_total > 0 %}{% widthratio medium_solved medium_total 100 %}{% else %}0{% endif %}%"></div>
                         </div>
                     </div>
                     <div class="progress-item">
                         <div class="progress-label">
                             <span>Hard Problems</span>
-                            <span>4/15</span>
+                            <span>{{ hard_solved }}/{{ hard_total }}</span>
                         </div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: 27%"></div>
+                            <div class="progress-fill" style="width: {% if hard_total > 0 %}{% widthratio hard_solved hard_total 100 %}{% else %}0{% endif %}%"></div>
                         </div>
                     </div>
                 </div>
@@ -518,33 +518,25 @@
                     Recent Submissions
                 </h3>
                 <div class="recent-submissions">
+                    {% for submission in recent_submissions %}
                     <div class="submission-item">
-                        <div class="submission-icon">
-                            <i class="fas fa-check"></i>
+                        <div class="submission-icon" style="background: {% if submission.status == 'accepted' %}var(--success-color){% else %}var(--danger-color){% endif %}">
+                            <i class="fas {% if submission.status == 'accepted' %}fa-check{% else %}fa-times{% endif %}"></i>
                         </div>
                         <div class="submission-content">
-                            <div class="submission-text">Solved "Two Sum" problem</div>
-                            <div class="submission-time">2 hours ago</div>
+                            <div class="submission-text">
+                                {% if submission.status == 'accepted' %}Solved{% else %}Attempted{% endif %} 
+                                "<a href="{% url 'problems:problem_detail' submission.problem.slug %}" style="color: var(--primary-color); text-decoration: none;">{{ submission.problem.title }}</a>" problem
+                            </div>
+                            <div class="submission-time">{{ submission.submitted_at|timesince }} ago</div>
                         </div>
                     </div>
-                    <div class="submission-item">
-                        <div class="submission-icon">
-                            <i class="fas fa-times"></i>
-                        </div>
-                        <div class="submission-content">
-                            <div class="submission-text">Attempted "Valid Parentheses" problem</div>
-                            <div class="submission-time">1 day ago</div>
-                        </div>
+                    {% empty %}
+                    <div style="text-align: center; padding: 2rem; color: var(--dark-text-secondary);">
+                        <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p>No submissions yet. Start solving problems!</p>
                     </div>
-                    <div class="submission-item">
-                        <div class="submission-icon">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="submission-content">
-                            <div class="submission-text">Solved "Palindrome Number" problem</div>
-                            <div class="submission-time">2 days ago</div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
 
                 <!-- Recommended Problems -->
@@ -553,33 +545,22 @@
                     Recommended Problems
                 </h3>
                 <div class="recommended-problems">
-                    <div class="problem-item">
-                        <div class="problem-icon">
+                    {% for problem in recommended_problems %}
+                    <a href="{% url 'problems:problem_detail' problem.slug %}" class="problem-item" style="text-decoration: none;">
+                        <div class="problem-icon" style="background: {% if problem.difficulty == 'easy' %}var(--success-color){% elif problem.difficulty == 'medium' %}var(--warning-color){% else %}var(--danger-color){% endif %}">
                             <i class="fas fa-star"></i>
                         </div>
                         <div class="problem-content">
-                            <div class="problem-title">Merge Sorted Array</div>
-                            <div class="problem-difficulty">Medium • Arrays</div>
+                            <div class="problem-title">{{ problem.title }}</div>
+                            <div class="problem-difficulty">{{ problem.get_difficulty_display }} • {% for tag in problem.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
                         </div>
+                    </a>
+                    {% empty %}
+                    <div style="text-align: center; padding: 2rem; color: var(--dark-text-secondary);">
+                        <i class="fas fa-trophy" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p>Congratulations! You've solved all available problems!</p>
                     </div>
-                    <div class="problem-item">
-                        <div class="problem-icon">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="problem-content">
-                            <div class="problem-title">Valid Anagram</div>
-                            <div class="problem-difficulty">Easy • Strings</div>
-                        </div>
-                    </div>
-                    <div class="problem-item">
-                        <div class="problem-icon">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="problem-content">
-                            <div class="problem-title">Climbing Stairs</div>
-                            <div class="problem-difficulty">Easy • Dynamic Programming</div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

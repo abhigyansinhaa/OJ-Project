@@ -1,0 +1,353 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Submission History - EvalX{% endblock %}
+
+{% block extra_css %}
+<style>
+    .history-container {
+        padding: 2rem 0;
+        min-height: calc(100vh - 80px);
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--dark-card) 0%, var(--dark-surface) 100%);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--dark-text);
+    }
+
+    .page-subtitle {
+        color: var(--dark-text-secondary);
+        font-size: 1.1rem;
+    }
+
+    .filters-section {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .filters-row {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .filter-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--dark-text);
+    }
+
+    .filter-select {
+        background: var(--dark-surface);
+        border: 1px solid var(--dark-border);
+        color: var(--dark-text);
+        border-radius: 8px;
+        padding: 0.5rem;
+        min-width: 150px;
+    }
+
+    .filter-select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+
+    .submissions-table {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+    }
+
+    .table-header {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        background: var(--dark-surface);
+        border-bottom: 1px solid var(--dark-border);
+        font-weight: 600;
+        color: var(--dark-text);
+    }
+
+    .submission-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--dark-border);
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .submission-row:last-child {
+        border-bottom: none;
+    }
+
+    .submission-row:hover {
+        background: var(--dark-surface);
+    }
+
+    .problem-link {
+        color: var(--dark-text);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .problem-link:hover {
+        color: var(--primary-color);
+    }
+
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        display: inline-block;
+    }
+
+    .status-accepted {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--success-color);
+    }
+
+    .status-wrong_answer, .status-tle, .status-rte, .status-ce, .status-mle {
+        background: rgba(239, 68, 68, 0.2);
+        color: var(--danger-color);
+    }
+
+    .status-pending, .status-running {
+        background: rgba(245, 158, 11, 0.2);
+        color: var(--warning-color);
+    }
+
+    .view-link {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .view-link:hover {
+        text-decoration: underline;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--dark-text-secondary);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+
+    .page-link {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        color: var(--dark-text);
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .page-link:hover {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+    .page-link.active {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .table-header {
+            display: none;
+        }
+        
+        .submission-row {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        
+        .filters-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="history-container">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Submission History</h1>
+            <p class="page-subtitle">
+                View all your past submissions and track your progress.
+            </p>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <form method="get" class="filters-row">
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select" name="status" onchange="this.form.submit()">
+                        <option value="">All Statuses</option>
+                        {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if current_status == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Language</label>
+                    <select class="filter-select" name="language" onchange="this.form.submit()">
+                        <option value="">All Languages</option>
+                        {% for value, label in language_choices %}
+                            <option value="{{ value }}" {% if current_language == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                {% if user_problems %}
+                <div class="filter-group">
+                    <label class="filter-label">Problem</label>
+                    <select class="filter-select" name="problem" onchange="this.form.submit()">
+                        <option value="">All Problems</option>
+                        {% for problem in user_problems %}
+                            <option value="{{ problem.slug }}" {% if current_problem == problem.slug %}selected{% endif %}>{{ problem.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+
+        <!-- Submissions Table -->
+        <div class="submissions-table">
+            <div class="table-header">
+                <div>Problem</div>
+                <div>Status</div>
+                <div>Language</div>
+                <div>Runtime</div>
+                <div>Submitted</div>
+                <div>Action</div>
+            </div>
+            
+            {% for submission in submissions %}
+            <div class="submission-row">
+                <div>
+                    <a href="{% url 'problems:problem_detail' submission.problem.slug %}" class="problem-link">
+                        {{ submission.problem.title }}
+                    </a>
+                </div>
+                <div>
+                    <span class="status-badge status-{{ submission.status }}">
+                        {{ submission.get_status_display }}
+                    </span>
+                </div>
+                <div style="color: var(--dark-text-secondary);">
+                    {{ submission.get_language_display }}
+                </div>
+                <div style="color: var(--dark-text-secondary);">
+                    {% if submission.runtime_ms %}{{ submission.runtime_ms }}ms{% else %}--{% endif %}
+                </div>
+                <div style="color: var(--dark-text-secondary);">
+                    {{ submission.submitted_at|timesince }} ago
+                </div>
+                <div>
+                    <a href="{% url 'submit:submission_detail' submission.id %}" class="view-link">
+                        View Details
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h3>No submissions yet</h3>
+                <p>Start solving problems to see your submission history here.</p>
+                <a href="{% url 'problems:problem_list' %}" class="btn-action btn-primary" style="margin-top: 1rem; display: inline-flex; padding: 0.75rem 1.5rem; border-radius: 8px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; text-decoration: none;">
+                    <i class="fas fa-tasks me-2"></i>
+                    Browse Problems
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-container">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_language %}&language={{ current_language }}{% endif %}{% if current_problem %}&problem={{ current_problem }}{% endif %}" class="page-link">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </a>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="page-link active">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_language %}&language={{ current_language }}{% endif %}{% if current_problem %}&problem={{ current_problem }}{% endif %}" class="page-link">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_language %}&language={{ current_language }}{% endif %}{% if current_problem %}&problem={{ current_problem }}{% endif %}" class="page-link">
+                    Next <i class="fas fa-chevron-right"></i>
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+

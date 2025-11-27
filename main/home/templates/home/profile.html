@@ -282,20 +282,20 @@
             <p class="profile-username">@{{ user.username }}</p>
             <div class="profile-stats">
                 <div class="profile-stat">
-                    <span class="stat-number">24</span>
+                    <span class="stat-number">{{ solved_problems }}</span>
                     <span class="stat-label">Problems Solved</span>
                 </div>
                 <div class="profile-stat">
-                    <span class="stat-number">156</span>
+                    <span class="stat-number">{{ total_submissions }}</span>
                     <span class="stat-label">Submissions</span>
                 </div>
                 <div class="profile-stat">
-                    <span class="stat-number">89%</span>
+                    <span class="stat-number">{{ success_rate }}%</span>
                     <span class="stat-label">Success Rate</span>
                 </div>
                 <div class="profile-stat">
-                    <span class="stat-number">15</span>
-                    <span class="stat-label">Day Streak</span>
+                    <span class="stat-number">{{ solved_problems }}</span>
+                    <span class="stat-label">Unique Solved</span>
                 </div>
             </div>
         </div>
@@ -305,7 +305,7 @@
             <div class="profile-sidebar">
                 <div class="sidebar-section">
                     <h5 class="sidebar-title">Quick Actions</h5>
-                    <a href="{% url 'home:problems' %}" class="sidebar-item">
+                    <a href="{% url 'problems:problem_list' %}" class="sidebar-item">
                         <i class="fas fa-tasks"></i>
                         Browse Problems
                     </a>
@@ -376,42 +376,25 @@
                     Recent Activity
                 </h3>
                 <div class="recent-activity">
+                    {% for submission in recent_submissions %}
                     <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-check"></i>
+                        <div class="activity-icon" style="background: {% if submission.status == 'accepted' %}var(--success-color){% else %}var(--danger-color){% endif %}">
+                            <i class="fas {% if submission.status == 'accepted' %}fa-check{% else %}fa-times{% endif %}"></i>
                         </div>
                         <div class="activity-content">
-                            <div class="activity-text">Solved "Two Sum" problem</div>
-                            <div class="activity-time">2 hours ago</div>
+                            <div class="activity-text">
+                                {% if submission.status == 'accepted' %}Solved{% else %}Attempted{% endif %} 
+                                "<a href="{% url 'problems:problem_detail' submission.problem.slug %}" style="color: var(--primary-color); text-decoration: none;">{{ submission.problem.title }}</a>" problem
+                            </div>
+                            <div class="activity-time">{{ submission.submitted_at|timesince }} ago</div>
                         </div>
                     </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-text">Solved "Valid Parentheses" problem</div>
-                            <div class="activity-time">1 day ago</div>
-                        </div>
+                    {% empty %}
+                    <div style="text-align: center; padding: 2rem; color: var(--dark-text-secondary);">
+                        <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p>No activity yet. Start solving problems!</p>
                     </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-times"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-text">Attempted "Merge Sorted Array" problem</div>
-                            <div class="activity-time">2 days ago</div>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-text">Solved "Palindrome Number" problem</div>
-                            <div class="activity-time">3 days ago</div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

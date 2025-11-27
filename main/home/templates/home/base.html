@@ -148,7 +148,7 @@
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'home:problems' %}">
+                            <a class="nav-link" href="{% url 'problems:problem_list' %}">
                                 <i class="fas fa-tasks me-1"></i>Problems
                             </a>
                         </li>
@@ -163,13 +163,18 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{% url 'submit:submission_history' %}">
+                                <i class="fas fa-history me-1"></i>Submissions
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'accounts:user_logout' %}">
                                 <i class="fas fa-sign-out-alt me-1"></i>Logout
                             </a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'home:problems' %}">
+                            <a class="nav-link" href="{% url 'problems:problem_list' %}">
                                 <i class="fas fa-tasks me-1"></i>Problems
                             </a>
                         </li>
