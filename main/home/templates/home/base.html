@@ -6,25 +6,37 @@
     <title>{% block title %}EvalX{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #6366f1;
-            --secondary-color: #8b5cf6;
-            --accent-color: #06b6d4;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --dark-bg: #0f0f23;
-            --dark-surface: #1a1a2e;
-            --dark-card: #16213e;
-            --dark-border: #2d3748;
-            --dark-text: #e2e8f0;
-            --dark-text-secondary: #a0aec0;
-            --dark-hover: #2d3748;
-            --border-radius: 16px;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.4);
+            --primary-color: #00d4ff;
+            --secondary-color: #7c3aed;
+            --accent-color: #00ff88;
+            --success-color: #00ff88;
+            --warning-color: #ffaa00;
+            --danger-color: #ff4757;
+            
+            /* Blackish gradient theme */
+            --dark-bg: #000000;
+            --dark-surface: #0a0a0a;
+            --dark-card: #111111;
+            --dark-border: #1a1a1a;
+            --dark-border-light: #2a2a2a;
+            --dark-text: #ffffff;
+            --dark-text-secondary: #888888;
+            --dark-hover: #1a1a1a;
+            
+            /* Gradient backgrounds */
+            --gradient-dark: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #111111 100%);
+            --gradient-card: linear-gradient(145deg, #111111 0%, #0a0a0a 100%);
+            --gradient-surface: linear-gradient(180deg, #0a0a0a 0%, #000000 100%);
+            --gradient-accent: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+            --gradient-glow: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            
+            --border-radius: 12px;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+            --shadow-hover: 0 8px 32px rgba(0, 212, 255, 0.15);
+            --glow: 0 0 20px rgba(0, 212, 255, 0.3);
         }
 
         * {
@@ -34,24 +46,53 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--dark-bg);
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--gradient-dark);
+            background-attachment: fixed;
             color: var(--dark-text);
             min-height: 100vh;
+            position: relative;
         }
 
+        /* Subtle grid pattern overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Navbar */
         .navbar {
-            background: rgba(26, 26, 46, 0.95) !important;
+            background: rgba(0, 0, 0, 0.85) !important;
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: none !important;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-            border-bottom: 1px solid var(--dark-border);
+            border-bottom: 1px solid var(--dark-border) !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
         }
 
         .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-brand i {
+            background: var(--gradient-accent);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -59,22 +100,40 @@
 
         .nav-link {
             font-weight: 500;
-            color: var(--dark-text) !important;
+            color: var(--dark-text-secondary) !important;
             transition: all 0.3s ease;
             border-radius: 8px;
-            padding: 8px 16px !important;
-            margin: 0 4px;
+            padding: 10px 16px !important;
+            margin: 0 2px;
+            font-size: 0.9rem;
+            position: relative;
         }
 
         .nav-link:hover {
             color: var(--primary-color) !important;
-            background: rgba(99, 102, 241, 0.1);
-            transform: translateY(-1px);
+            background: rgba(0, 212, 255, 0.08);
         }
 
         .nav-link.active {
             color: var(--primary-color) !important;
-            background: rgba(99, 102, 241, 0.1);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 20px;
+            height: 2px;
+            background: var(--gradient-accent);
+            border-radius: 1px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            transform: translateX(-50%) scaleX(1);
         }
 
         .navbar-toggler {
@@ -82,18 +141,22 @@
         }
 
         .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28226, 232, 240, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.7%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
         }
 
         main {
-            margin-top: 80px;
-            min-height: calc(100vh - 80px);
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+            position: relative;
+            z-index: 1;
         }
 
+        /* Card styles */
         .card, .bg-white {
-            background: var(--dark-card) !important;
-            border-color: var(--dark-border) !important;
+            background: var(--gradient-card) !important;
+            border: 1px solid var(--dark-border) !important;
             color: var(--dark-text) !important;
+            border-radius: var(--border-radius);
         }
 
         .text-dark {
@@ -108,19 +171,28 @@
             border-color: var(--dark-border) !important;
         }
 
+        /* Form controls */
         .form-control {
             background: var(--dark-surface) !important;
-            border-color: var(--dark-border) !important;
+            border: 1px solid var(--dark-border) !important;
             color: var(--dark-text) !important;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
 
         .form-control:focus {
-            background: var(--dark-surface) !important;
+            background: var(--dark-card) !important;
             border-color: var(--primary-color) !important;
             color: var(--dark-text) !important;
-            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.15), var(--glow);
         }
 
+        .form-control::placeholder {
+            color: var(--dark-text-secondary);
+            opacity: 0.6;
+        }
+
+        /* Buttons */
         .btn-outline-secondary {
             border-color: var(--dark-border);
             color: var(--dark-text-secondary);
@@ -128,8 +200,63 @@
 
         .btn-outline-secondary:hover {
             background: var(--dark-hover);
-            border-color: var(--dark-border);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* Primary button glow effect */
+        .btn-primary, .btn-primary-custom {
+            background: var(--gradient-accent);
+            border: none;
+            color: #000;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover, .btn-primary-custom:hover {
+            box-shadow: var(--glow);
+            transform: translateY(-2px);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--dark-border-light);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--dark-text-secondary);
+        }
+
+        /* Selection color */
+        ::selection {
+            background: rgba(0, 212, 255, 0.3);
             color: var(--dark-text);
+        }
+
+        /* Links */
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Code/monospace */
+        code, pre, .code-textarea, .example-box-content {
+            font-family: 'JetBrains Mono', monospace;
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -139,7 +266,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home:index' %}">
-                <i class="fas fa-code me-2"></i>EvalX
+                <i class="fas fa-terminal me-2"></i>EvalX
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
                 <span class="navbar-toggler-icon"></span>
@@ -149,17 +276,17 @@
                     {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'problems:problem_list' %}">
-                                <i class="fas fa-tasks me-1"></i>Problems
+                                <i class="fas fa-code me-1"></i>Problems
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'home:dashboard' %}">
-                                <i class="fas fa-chart-line me-1"></i>Dashboard
+                                <i class="fas fa-chart-bar me-1"></i>Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'home:profile' %}">
-                                <i class="fas fa-user me-1"></i>Profile
+                                <i class="fas fa-user-circle me-1"></i>Profile
                             </a>
                         </li>
                         <li class="nav-item">
@@ -175,7 +302,7 @@
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'problems:problem_list' %}">
-                                <i class="fas fa-tasks me-1"></i>Problems
+                                <i class="fas fa-code me-1"></i>Problems
                             </a>
                         </li>
                         <li class="nav-item">
@@ -204,4 +331,3 @@
     {% block extra_js %}{% endblock %}
 </body>
 </html>
-
