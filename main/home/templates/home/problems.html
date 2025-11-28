@@ -26,8 +26,8 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        height: 2px;
+        background: #333333;
     }
 
     .page-title {
@@ -82,8 +82,8 @@
 
     .filter-select:focus {
         outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+        border-color: #444444;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
     }
 
     .search-box {
@@ -102,8 +102,8 @@
 
     .search-input:focus {
         outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+        border-color: #444444;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
     }
 
     .problems-content {
@@ -141,11 +141,11 @@
     }
 
     .filter-option:hover {
-        background: rgba(99, 102, 241, 0.1);
+        background: rgba(255, 255, 255, 0.05);
     }
 
     .filter-checkbox {
-        accent-color: var(--primary-color);
+        accent-color: #ffffff;
     }
 
     .filter-text {
@@ -174,8 +174,8 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        height: 2px;
+        background: #333333;
         transform: scaleX(0);
         transition: transform 0.3s ease;
     }
@@ -185,9 +185,9 @@
     }
 
     .problem-card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-hover);
-        border-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
+        border-color: #333333;
     }
 
     .problem-header {
@@ -258,9 +258,9 @@
     }
 
     .btn-solve {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        background: #ffffff;
         border: none;
-        color: white;
+        color: #000000;
         padding: 0.75rem 1.5rem;
         border-radius: 8px;
         font-weight: 600;
@@ -272,9 +272,10 @@
     }
 
     .btn-solve:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-hover);
-        color: white;
+        transform: translateY(-1px);
+        background: #e0e0e0;
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        color: #000000;
         text-decoration: none;
     }
 
@@ -293,8 +294,8 @@
     }
 
     .btn-preview:hover {
-        border-color: var(--primary-color);
-        color: var(--primary-color);
+        border-color: #444444;
+        color: #ffffff;
         text-decoration: none;
     }
 
@@ -316,16 +317,16 @@
     }
 
     .page-link:hover {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        color: white;
+        background: #333333;
+        border-color: #444444;
+        color: #ffffff;
         text-decoration: none;
     }
 
     .page-link.active {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        color: white;
+        background: #ffffff;
+        border-color: #ffffff;
+        color: #000000;
     }
 
     .loading-spinner {
@@ -340,7 +341,7 @@
         width: 40px;
         height: 40px;
         border: 4px solid var(--dark-border);
-        border-top: 4px solid var(--primary-color);
+        border-top: 4px solid #ffffff;
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin-right: 1rem;

@@ -1,12 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q, Prefetch
 from .models import Problem, TestCase, Tag
 from submit.models import Submission, SubmissionStatus
 
 
-class ProblemListView(LoginRequiredMixin, ListView):
+class ProblemListView(ListView):
     """List all active problems with filtering and user solve status."""
     model = Problem
     template_name = 'problems/problem_list.html'
@@ -78,8 +77,11 @@ class ProblemListView(LoginRequiredMixin, ListView):
         return context
 
 
-class ProblemDetailView(LoginRequiredMixin, DetailView):
-    """Display problem details with sample test cases and submission form."""
+class ProblemDetailView(DetailView):
+    """Display problem details with sample test cases and submission form.
+    
+    Unauthenticated users can view problems but must log in to submit solutions.
+    """
     model = Problem
     template_name = 'problems/problem_detail.html'
     context_object_name = 'problem'

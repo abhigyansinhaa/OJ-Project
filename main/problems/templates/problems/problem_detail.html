@@ -50,8 +50,8 @@
 
     .resizer:hover,
     .resizer.active {
-        background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-        box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        background: #333333;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
     }
 
     .resizer::after {
@@ -106,7 +106,7 @@
     }
 
     .panel-tab.active {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        background: #ffffff;
         color: #000;
         font-weight: 600;
     }
@@ -132,9 +132,9 @@
     }
 
     .panel-btn:hover {
-        border-color: var(--primary-color);
-        color: var(--primary-color);
-        box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+        border-color: #444444;
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.05);
     }
 
     /* Panel Content */
@@ -230,9 +230,9 @@
     }
 
     .tag-badge {
-        background: rgba(0, 212, 255, 0.1);
-        color: var(--primary-color);
-        border: 1px solid rgba(0, 212, 255, 0.2);
+        background: rgba(255, 255, 255, 0.05);
+        color: #888888;
+        border: 1px solid #2a2a2a;
         padding: 0.25rem 0.6rem;
         border-radius: 4px;
         font-size: 0.7rem;
@@ -271,7 +271,7 @@
         background: linear-gradient(135deg, #0a0a0a 0%, #111111 100%);
         padding: 1rem 1.25rem;
         border-radius: 8px;
-        border-left: 2px solid var(--primary-color);
+        border-left: 2px solid #333333;
         font-family: 'JetBrains Mono', monospace;
     }
 
@@ -293,7 +293,7 @@
 
     .constraints-list li::before {
         content: '→';
-        color: var(--primary-color);
+        color: #555555;
         font-weight: bold;
     }
 
@@ -339,7 +339,7 @@
     .example-box-content {
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.85rem;
-        color: var(--primary-color);
+        color: #cccccc;
         white-space: pre-wrap;
     }
 
@@ -379,8 +379,8 @@
 
     .language-select:focus {
         outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+        border-color: #444444;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
     }
 
     .editor-container {
@@ -417,7 +417,7 @@
     }
 
     .code-textarea::selection {
-        background: rgba(0, 212, 255, 0.3);
+        background: rgba(255, 255, 255, 0.2);
     }
 
     /* Bottom Action Bar */
@@ -460,14 +460,14 @@
     }
 
     .btn-run:hover {
-        border-color: var(--primary-color);
-        color: var(--primary-color);
-        box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+        border-color: #444444;
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.05);
     }
 
     .btn-submit {
         padding: 0.6rem 1.75rem;
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        background: #ffffff;
         border: none;
         color: #000;
         font-size: 0.85rem;
@@ -482,8 +482,9 @@
     }
 
     .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 0 25px rgba(0, 212, 255, 0.4);
+        transform: translateY(-1px);
+        background: #e0e0e0;
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
     }
 
     /* Recent Submissions Panel */
@@ -555,6 +556,89 @@
         border: 1px solid rgba(255, 170, 0, 0.3);
     }
 
+    /* Login prompt for unauthenticated users */
+    .login-prompt {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding: 3rem;
+        text-align: center;
+    }
+
+    .login-prompt-icon {
+        font-size: 4rem;
+        color: #333;
+        margin-bottom: 1.5rem;
+    }
+
+    .login-prompt-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 0.75rem;
+    }
+
+    .login-prompt-text {
+        color: #666;
+        margin-bottom: 2rem;
+        max-width: 300px;
+        line-height: 1.6;
+    }
+
+    .login-prompt-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .btn-login {
+        padding: 0.75rem 2rem;
+        background: #ffffff;
+        border: none;
+        color: #000;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-login:hover {
+        background: #e0e0e0;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        color: #000;
+        text-decoration: none;
+    }
+
+    .btn-register {
+        padding: 0.75rem 2rem;
+        background: transparent;
+        border: 1px solid #333;
+        color: #888;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-register:hover {
+        border-color: #444;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.05);
+        text-decoration: none;
+    }
+
     /* Responsive */
     @media (max-width: 900px) {
         .solve-wrapper {
@@ -593,7 +677,9 @@
         <div class="panel-header">
             <div class="panel-tabs">
                 <button class="panel-tab active" onclick="showTab('description')">Description</button>
+                {% if user.is_authenticated %}
                 <button class="panel-tab" onclick="showTab('submissions')">Submissions</button>
+                {% endif %}
             </div>
             <div class="panel-actions">
                 <a href="{% url 'problems:problem_list' %}" class="panel-btn">
@@ -705,6 +791,7 @@
 
     <!-- Right Panel - Code Editor -->
     <div class="panel-right" id="panelRight">
+        {% if user.is_authenticated %}
         <form method="post" action="{% url 'submit:submit_solution' problem.slug %}" id="submitForm">
             {% csrf_token %}
             
@@ -744,6 +831,24 @@
                 </div>
             </div>
         </form>
+        {% else %}
+        <!-- Login Prompt for unauthenticated users -->
+        <div class="login-prompt">
+            <i class="fas fa-lock login-prompt-icon"></i>
+            <h3 class="login-prompt-title">Sign in to Submit</h3>
+            <p class="login-prompt-text">
+                Create an account or log in to submit your solution and track your progress.
+            </p>
+            <div class="login-prompt-buttons">
+                <a href="{% url 'accounts:user_login' %}?next={{ request.path }}" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Log In
+                </a>
+                <a href="{% url 'accounts:user_register' %}" class="btn-register">
+                    <i class="fas fa-user-plus"></i> Register
+                </a>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 
@@ -800,6 +905,8 @@
         document.body.style.userSelect = '';
     });
 
+    // Code editor functionality (only for authenticated users)
+    {% if user.is_authenticated %}
     // Language change handler
     document.getElementById('language').addEventListener('change', function() {
         const language = this.value;
@@ -852,7 +959,8 @@
     // Keyboard shortcut for submit
     document.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.key === 'Enter') {
-            document.getElementById('submitForm').submit();
+            const form = document.getElementById('submitForm');
+            if (form) form.submit();
         }
     });
 
@@ -866,5 +974,6 @@
             this.selectionStart = this.selectionEnd = start + 4;
         }
     });
+    {% endif %}
 </script>
 {% endblock %}

@@ -25,8 +25,8 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        height: 2px;
+        background: #333333;
     }
 
     .problem-title {
@@ -152,7 +152,7 @@
 
     .constraints-list li::before {
         content: '•';
-        color: var(--primary-color);
+        color: #555555;
         font-weight: bold;
         margin-right: 0.5rem;
     }
@@ -188,8 +188,8 @@
 
     .form-select:focus {
         outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+        border-color: #444444;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
     }
 
     .code-editor {
@@ -232,8 +232,8 @@
     }
 
     .btn-editor:hover {
-        border-color: var(--primary-color);
-        color: var(--primary-color);
+        border-color: #444444;
+        color: #ffffff;
     }
 
     .code-textarea {
@@ -280,15 +280,15 @@
 
     .io-textarea:focus {
         outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+        border-color: #444444;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
     }
 
     .btn-submit {
         width: 100%;
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        background: #ffffff;
         border: none;
-        color: white;
+        color: #000000;
         padding: 1rem;
         border-radius: 12px;
         font-size: 1.1rem;
@@ -300,8 +300,9 @@
     }
 
     .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-hover);
+        transform: translateY(-1px);
+        background: #e0e0e0;
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
     }
 
     .btn-submit:active {
@@ -332,8 +333,8 @@
     }
 
     .hint-section {
-        background: rgba(99, 102, 241, 0.1);
-        border: 1px solid rgba(99, 102, 241, 0.2);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid #2a2a2a;
         border-radius: 8px;
         padding: 1rem;
         margin-top: 1rem;
@@ -341,7 +342,7 @@
 
     .hint-title {
         font-weight: 600;
-        color: var(--primary-color);
+        color: #888888;
         margin-bottom: 0.5rem;
         display: flex;
         align-items: center;
