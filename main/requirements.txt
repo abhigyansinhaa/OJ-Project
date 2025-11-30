@@ -1,0 +1,11 @@
+# Django and core dependencies
+Django==5.2.5
+gunicorn==21.2.0
+
+# Database (for production, optional PostgreSQL support)
+psycopg2-binary==2.9.9
+
+# Security and utilities
+python-decouple==3.8
+whitenoise==6.6.0
+
