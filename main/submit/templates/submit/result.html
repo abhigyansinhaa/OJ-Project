@@ -301,9 +301,7 @@
 
     .progress-fill {
         height: 100%;
-        background: linear-gradient(90deg, 
-            {% if submission.status == 'accepted' %}var(--success-color), #059669{% else %}var(--primary-color), var(--secondary-color){% endif %}
-        );
+        background: {% if submission.status == 'accepted' %}var(--success-color){% else %}#ffffff{% endif %};
         transition: width 0.3s ease;
     }
 

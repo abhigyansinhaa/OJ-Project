@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
+        /* ========================================
+           DARK THEME (Default)
+           ======================================== */
+        :root, [data-theme="dark"] {
             --primary-color: #ffffff;
             --secondary-color: #e0e0e0;
             --accent-color: #ffffff;
@@ -16,26 +19,83 @@
             --warning-color: #ffaa00;
             --danger-color: #ff4757;
             
-            /* Blackish gradient theme */
-            --dark-bg: #000000;
-            --dark-surface: #0a0a0a;
-            --dark-card: #111111;
-            --dark-border: #1a1a1a;
-            --dark-border-light: #2a2a2a;
-            --dark-text: #ffffff;
-            --dark-text-secondary: #888888;
-            --dark-hover: #1a1a1a;
+            /* Dark theme colors */
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-card: #111111;
+            --bg-surface: #0a0a0a;
+            --border-color: #1a1a1a;
+            --border-light: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #666666;
+            --hover-bg: #1a1a1a;
             
-            /* Gradient backgrounds */
-            --gradient-dark: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #111111 100%);
+            /* Gradients */
+            --gradient-bg: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #111111 100%);
             --gradient-card: linear-gradient(145deg, #111111 0%, #0a0a0a 100%);
-            --gradient-surface: linear-gradient(180deg, #0a0a0a 0%, #000000 100%);
-            --gradient-accent: #ffffff;
             
-            --border-radius: 12px;
+            /* Navbar */
+            --navbar-bg: rgba(0, 0, 0, 0.85);
+            --navbar-border: #1a1a1a;
+            
+            /* Buttons */
+            --btn-primary-bg: #ffffff;
+            --btn-primary-text: #000000;
+            --btn-primary-hover: #e0e0e0;
+            
+            /* Grid pattern */
+            --grid-color: rgba(255, 255, 255, 0.02);
+            
+            /* Shadows */
             --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
             --shadow-hover: 0 4px 20px rgba(255, 255, 255, 0.1);
-            --glow: 0 0 15px rgba(255, 255, 255, 0.15);
+            
+            --border-radius: 12px;
+        }
+
+        /* ========================================
+           LIGHT THEME
+           ======================================== */
+        [data-theme="light"] {
+            --primary-color: #1a1a1a;
+            --secondary-color: #333333;
+            --accent-color: #1a1a1a;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            
+            /* Light theme colors */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-card: #ffffff;
+            --bg-surface: #f1f5f9;
+            --border-color: #e2e8f0;
+            --border-light: #cbd5e1;
+            --text-primary: #1a1a1a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --hover-bg: #f1f5f9;
+            
+            /* Gradients */
+            --gradient-bg: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #f1f5f9 100%);
+            --gradient-card: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            
+            /* Navbar */
+            --navbar-bg: rgba(255, 255, 255, 0.95);
+            --navbar-border: #e2e8f0;
+            
+            /* Buttons */
+            --btn-primary-bg: #1a1a1a;
+            --btn-primary-text: #ffffff;
+            --btn-primary-hover: #333333;
+            
+            /* Grid pattern */
+            --grid-color: rgba(0, 0, 0, 0.03);
+            
+            /* Shadows */
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
 
         * {
@@ -46,11 +106,12 @@
 
         body {
             font-family: 'Space Grotesk', sans-serif;
-            background: var(--gradient-dark);
+            background: var(--gradient-bg);
             background-attachment: fixed;
-            color: var(--dark-text);
+            color: var(--text-primary);
             min-height: 100vh;
             position: relative;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         /* Subtle grid pattern overlay */
@@ -62,8 +123,8 @@
             width: 100%;
             height: 100%;
             background-image: 
-                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
             background-size: 50px 50px;
             pointer-events: none;
             z-index: 0;
@@ -71,29 +132,30 @@
 
         /* Navbar */
         .navbar {
-            background: rgba(0, 0, 0, 0.85) !important;
+            background: var(--navbar-bg) !important;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: none !important;
-            border-bottom: 1px solid var(--dark-border) !important;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid var(--navbar-border) !important;
+            box-shadow: var(--shadow);
             z-index: 1000;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
-            color: #ffffff;
+            color: var(--text-primary) !important;
             letter-spacing: -0.5px;
         }
 
         .navbar-brand i {
-            color: #ffffff;
+            color: var(--text-primary);
         }
 
         .nav-link {
             font-weight: 500;
-            color: var(--dark-text-secondary) !important;
+            color: var(--text-secondary) !important;
             transition: all 0.3s ease;
             border-radius: 8px;
             padding: 10px 16px !important;
@@ -103,13 +165,13 @@
         }
 
         .nav-link:hover {
-            color: #ffffff !important;
-            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary) !important;
+            background: var(--hover-bg);
         }
 
         .nav-link.active {
-            color: #ffffff !important;
-            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary) !important;
+            background: var(--hover-bg);
         }
 
         .nav-link::after {
@@ -120,7 +182,7 @@
             transform: translateX(-50%) scaleX(0);
             width: 20px;
             height: 2px;
-            background: #ffffff;
+            background: var(--text-primary);
             border-radius: 1px;
             transition: transform 0.3s ease;
         }
@@ -130,11 +192,67 @@
         }
 
         .navbar-toggler {
-            border-color: var(--dark-border);
+            border-color: var(--border-color);
         }
 
-        .navbar-toggler-icon {
+        [data-theme="dark"] .navbar-toggler-icon {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.7%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        [data-theme="light"] .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.7%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* Theme Switcher Container */
+        .theme-switcher {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 12px;
+            padding: 6px 12px;
+            background: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-switcher:hover {
+            border-color: var(--border-light);
+        }
+
+        .theme-option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+        }
+
+        .theme-option:hover {
+            color: var(--text-primary);
+            background: var(--border-color);
+        }
+
+        .theme-option.active {
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .theme-option i {
+            font-size: 0.9rem;
+        }
+
+        .theme-divider {
+            width: 1px;
+            height: 20px;
+            background: var(--border-color);
         }
 
         main {
@@ -147,68 +265,73 @@
         /* Card styles */
         .card, .bg-white {
             background: var(--gradient-card) !important;
-            border: 1px solid var(--dark-border) !important;
-            color: var(--dark-text) !important;
+            border: 1px solid var(--border-color) !important;
+            color: var(--text-primary) !important;
             border-radius: var(--border-radius);
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .text-dark {
-            color: var(--dark-text) !important;
+            color: var(--text-primary) !important;
         }
 
         .text-muted {
-            color: var(--dark-text-secondary) !important;
+            color: var(--text-secondary) !important;
         }
 
         .border {
-            border-color: var(--dark-border) !important;
+            border-color: var(--border-color) !important;
         }
 
         /* Form controls */
         .form-control {
-            background: var(--dark-surface) !important;
-            border: 1px solid var(--dark-border) !important;
-            color: var(--dark-text) !important;
+            background: var(--bg-surface) !important;
+            border: 1px solid var(--border-color) !important;
+            color: var(--text-primary) !important;
             border-radius: 8px;
             transition: all 0.3s ease;
         }
 
         .form-control:focus {
-            background: var(--dark-card) !important;
-            border-color: #444444 !important;
-            color: var(--dark-text) !important;
+            background: var(--bg-card) !important;
+            border-color: var(--border-light) !important;
+            color: var(--text-primary) !important;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .form-control:focus {
             box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
         }
 
         .form-control::placeholder {
-            color: var(--dark-text-secondary);
+            color: var(--text-muted);
             opacity: 0.6;
         }
 
         /* Buttons */
         .btn-outline-secondary {
-            border-color: var(--dark-border);
-            color: var(--dark-text-secondary);
+            border-color: var(--border-color);
+            color: var(--text-secondary);
         }
 
         .btn-outline-secondary:hover {
-            background: var(--dark-hover);
-            border-color: #444444;
-            color: #ffffff;
+            background: var(--hover-bg);
+            border-color: var(--border-light);
+            color: var(--text-primary);
         }
 
         /* Primary button */
         .btn-primary, .btn-primary-custom {
-            background: #ffffff;
+            background: var(--btn-primary-bg);
             border: none;
-            color: #000000;
+            color: var(--btn-primary-text);
             font-weight: 600;
             transition: all 0.3s ease;
         }
 
         .btn-primary:hover, .btn-primary-custom:hover {
-            background: #e0e0e0;
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
+            background: var(--btn-primary-hover);
+            box-shadow: var(--shadow-hover);
             transform: translateY(-1px);
         }
 
@@ -219,45 +342,74 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: var(--dark-bg);
+            background: var(--bg-primary);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: var(--dark-border-light);
+            background: var(--border-light);
             border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: var(--dark-text-secondary);
+            background: var(--text-secondary);
         }
 
         /* Selection color */
-        ::selection {
+        [data-theme="dark"] ::selection {
             background: rgba(255, 255, 255, 0.2);
-            color: var(--dark-text);
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] ::selection {
+            background: rgba(0, 0, 0, 0.1);
+            color: var(--text-primary);
         }
 
         /* Links */
         a {
-            color: #aaaaaa;
+            color: var(--text-secondary);
             text-decoration: none;
             transition: all 0.2s ease;
         }
 
         a:hover {
-            color: #ffffff;
+            color: var(--text-primary);
         }
 
         /* Code/monospace */
         code, pre, .code-textarea, .example-box-content {
             font-family: 'JetBrains Mono', monospace;
         }
+
+        /* Dark theme specific overrides */
+        [data-theme="dark"] {
+            --dark-bg: var(--bg-primary);
+            --dark-surface: var(--bg-surface);
+            --dark-card: var(--bg-card);
+            --dark-border: var(--border-color);
+            --dark-border-light: var(--border-light);
+            --dark-text: var(--text-primary);
+            --dark-text-secondary: var(--text-secondary);
+            --dark-hover: var(--hover-bg);
+        }
+
+        /* Light theme specific overrides */
+        [data-theme="light"] {
+            --dark-bg: var(--bg-primary);
+            --dark-surface: var(--bg-surface);
+            --dark-card: var(--bg-card);
+            --dark-border: var(--border-color);
+            --dark-border-light: var(--border-light);
+            --dark-text: var(--text-primary);
+            --dark-text-secondary: var(--text-secondary);
+            --dark-hover: var(--hover-bg);
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home:index' %}">
                 <i class="fas fa-terminal me-2"></i>EvalX
@@ -266,31 +418,21 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div id="nav" class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-center">
                     {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'problems:problem_list' %}">
-                                <i class="fas fa-code me-1"></i>Problems
-                            </a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'home:dashboard' %}">
                                 <i class="fas fa-chart-bar me-1"></i>Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{% url 'problems:problem_list' %}">
+                                <i class="fas fa-code me-1"></i>Problems
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'home:profile' %}">
                                 <i class="fas fa-user-circle me-1"></i>Profile
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'submit:submission_history' %}">
-                                <i class="fas fa-history me-1"></i>Submissions
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'accounts:user_logout' %}">
-                                <i class="fas fa-sign-out-alt me-1"></i>Logout
                             </a>
                         </li>
                     {% else %}
@@ -304,12 +446,19 @@
                                 <i class="fas fa-sign-in-alt me-1"></i>Login
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'accounts:user_register' %}">
-                                <i class="fas fa-user-plus me-1"></i>Register
-                            </a>
-                        </li>
                     {% endif %}
+                    <!-- Theme Switcher -->
+                    <li class="nav-item">
+                        <div class="theme-switcher">
+                            <button class="theme-option" id="lightThemeBtn" title="Light mode" data-theme="light">
+                                <i class="fas fa-sun"></i>
+                            </button>
+                            <div class="theme-divider"></div>
+                            <button class="theme-option" id="darkThemeBtn" title="Dark mode" data-theme="dark">
+                                <i class="fas fa-moon"></i>
+                            </button>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -322,6 +471,53 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Theme Toggle Script -->
+    <script>
+        (function() {
+            // Get saved theme or default to dark
+            const savedTheme = localStorage.getItem('evalx-theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            // Update active button state
+            function updateActiveButton(theme) {
+                const lightBtn = document.getElementById('lightThemeBtn');
+                const darkBtn = document.getElementById('darkThemeBtn');
+                
+                if (lightBtn && darkBtn) {
+                    lightBtn.classList.toggle('active', theme === 'light');
+                    darkBtn.classList.toggle('active', theme === 'dark');
+                }
+            }
+            
+            // Theme toggle functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const lightBtn = document.getElementById('lightThemeBtn');
+                const darkBtn = document.getElementById('darkThemeBtn');
+                
+                // Set initial active state
+                updateActiveButton(savedTheme);
+                
+                // Light theme button
+                if (lightBtn) {
+                    lightBtn.addEventListener('click', function() {
+                        document.documentElement.setAttribute('data-theme', 'light');
+                        localStorage.setItem('evalx-theme', 'light');
+                        updateActiveButton('light');
+                    });
+                }
+                
+                // Dark theme button
+                if (darkBtn) {
+                    darkBtn.addEventListener('click', function() {
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                        localStorage.setItem('evalx-theme', 'dark');
+                        updateActiveButton('dark');
+                    });
+                }
+            });
+        })();
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

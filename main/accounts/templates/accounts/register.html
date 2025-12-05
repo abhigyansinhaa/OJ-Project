@@ -285,60 +285,6 @@
         100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
 
-    .divider {
-        text-align: center;
-        margin: 2rem 0;
-        position: relative;
-        color: #444444;
-    }
-
-    .divider::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: #1a1a1a;
-    }
-
-    .divider span {
-        background: linear-gradient(145deg, #111111 0%, #0a0a0a 100%);
-        padding: 0 1rem;
-        position: relative;
-        z-index: 1;
-        font-size: 0.85rem;
-    }
-
-    .social-register {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    .btn-social {
-        padding: 0.75rem;
-        border: 1px solid #2a2a2a;
-        background: transparent;
-        color: #666666;
-        border-radius: 8px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        font-size: 0.9rem;
-    }
-
-    .btn-social:hover {
-        border-color: #444444;
-        color: #ffffff;
-        background: rgba(255, 255, 255, 0.05);
-    }
-
     .register-footer {
         text-align: center;
         margin-top: 2rem;
@@ -570,21 +516,6 @@
                 Create Account
             </button>
         </form>
-
-        <div class="divider">
-            <span>or sign up with</span>
-        </div>
-
-        <div class="social-register">
-            <button class="btn-social" type="button">
-                <i class="fab fa-google"></i>
-                Google
-            </button>
-            <button class="btn-social" type="button">
-                <i class="fab fa-github"></i>
-                GitHub
-            </button>
-        </div>
 
         <div class="register-footer">
             <p>Already have an account? <a href="{% url 'accounts:user_login' %}">Sign in</a></p>

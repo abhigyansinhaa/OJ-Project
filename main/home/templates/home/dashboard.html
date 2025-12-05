@@ -26,7 +26,7 @@
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        background: #333333;
     }
 
     .welcome-title {
@@ -68,7 +68,7 @@
         left: 0;
         right: 0;
         height: 3px;
-        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        background: #444444;
         transform: scaleX(0);
         transition: transform 0.3s ease;
     }
@@ -80,7 +80,7 @@
     .quick-action:hover {
         transform: translateY(-5px);
         box-shadow: var(--shadow-hover);
-        border-color: var(--primary-color);
+        border-color: #333333;
         text-decoration: none;
         color: var(--dark-text);
     }
@@ -88,13 +88,14 @@
     .quick-action-icon {
         width: 60px;
         height: 60px;
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto 1rem;
-        color: white;
+        color: #ffffff;
         font-size: 1.5rem;
     }
 
@@ -129,26 +130,27 @@
     .stat-card:hover {
         transform: translateY(-3px);
         box-shadow: var(--shadow-hover);
-        border-color: var(--primary-color);
+        border-color: #333333;
     }
 
     .stat-icon {
         width: 50px;
         height: 50px;
-        background: var(--primary-color);
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto 1rem;
-        color: white;
+        color: #ffffff;
         font-size: 1.25rem;
     }
 
     .stat-number {
         font-size: 2rem;
         font-weight: 700;
-        color: var(--primary-color);
+        color: #ffffff;
         margin-bottom: 0.5rem;
         display: block;
     }
@@ -202,8 +204,8 @@
     }
 
     .sidebar-item:hover {
-        color: var(--primary-color);
-        background: rgba(99, 102, 241, 0.1);
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.05);
         padding-left: 0.5rem;
         text-decoration: none;
     }
@@ -250,7 +252,7 @@
 
     .progress-fill {
         height: 100%;
-        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        background: #ffffff;
         border-radius: 4px;
         transition: width 0.3s ease;
     }
@@ -282,12 +284,13 @@
     .submission-icon {
         width: 40px;
         height: 40px;
-        background: var(--primary-color);
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: #ffffff;
         font-size: 1rem;
     }
 
@@ -526,7 +529,7 @@
                         <div class="submission-content">
                             <div class="submission-text">
                                 {% if submission.status == 'accepted' %}Solved{% else %}Attempted{% endif %} 
-                                "<a href="{% url 'problems:problem_detail' submission.problem.slug %}" style="color: var(--primary-color); text-decoration: none;">{{ submission.problem.title }}</a>" problem
+                                "<a href="{% url 'problems:problem_detail' submission.problem.slug %}" style="color: #ffffff; text-decoration: none;">{{ submission.problem.title }}</a>" problem
                             </div>
                             <div class="submission-time">{{ submission.submitted_at|timesince }} ago</div>
                         </div>
