@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: online-judge
+    env: python
+    buildCommand: pip install -r requirements.txt && cd main && python manage.py collectstatic --noinput
+    startCommand: cd main && gunicorn main.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: 1
+      - key: PYTHONPATH
+        value: /opt/render/project/src/main
+      - key: DJANGO_SETTINGS_MODULE
+        value: main.settings
+      - key: SECRET_KEY
+        sync: false
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 5432
