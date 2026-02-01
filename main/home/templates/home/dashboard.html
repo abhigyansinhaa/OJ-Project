@@ -26,7 +26,7 @@
         left: 0;
         right: 0;
         height: 4px;
-        background: #333333;
+        background: var(--border-light);
     }
 
     .welcome-title {
@@ -68,7 +68,7 @@
         left: 0;
         right: 0;
         height: 3px;
-        background: #444444;
+        background: var(--border-light);
         transform: scaleX(0);
         transition: transform 0.3s ease;
     }
@@ -80,7 +80,7 @@
     .quick-action:hover {
         transform: translateY(-5px);
         box-shadow: var(--shadow-hover);
-        border-color: #333333;
+        border-color: var(--border-light);
         text-decoration: none;
         color: var(--dark-text);
     }
@@ -88,14 +88,14 @@
     .quick-action-icon {
         width: 60px;
         height: 60px;
-        background: #1a1a1a;
-        border: 1px solid #2a2a2a;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-light);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto 1rem;
-        color: #ffffff;
+        color: var(--text-primary);
         font-size: 1.5rem;
     }
 
@@ -130,27 +130,27 @@
     .stat-card:hover {
         transform: translateY(-3px);
         box-shadow: var(--shadow-hover);
-        border-color: #333333;
+        border-color: var(--border-light);
     }
 
     .stat-icon {
         width: 50px;
         height: 50px;
-        background: #1a1a1a;
-        border: 1px solid #2a2a2a;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-light);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto 1rem;
-        color: #ffffff;
+        color: var(--text-primary);
         font-size: 1.25rem;
     }
 
     .stat-number {
         font-size: 2rem;
         font-weight: 700;
-        color: #ffffff;
+        color: var(--text-primary);
         margin-bottom: 0.5rem;
         display: block;
     }
@@ -204,8 +204,8 @@
     }
 
     .sidebar-item:hover {
-        color: #ffffff;
-        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-primary);
+        background: var(--hover-bg);
         padding-left: 0.5rem;
         text-decoration: none;
     }
@@ -252,7 +252,7 @@
 
     .progress-fill {
         height: 100%;
-        background: #ffffff;
+        background: var(--btn-primary-bg);
         border-radius: 4px;
         transition: width 0.3s ease;
     }
@@ -284,13 +284,13 @@
     .submission-icon {
         width: 40px;
         height: 40px;
-        background: #1a1a1a;
-        border: 1px solid #2a2a2a;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-light);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #ffffff;
+        color: var(--text-primary);
         font-size: 1rem;
     }
 
@@ -529,7 +529,7 @@
                         <div class="submission-content">
                             <div class="submission-text">
                                 {% if submission.status == 'accepted' %}Solved{% else %}Attempted{% endif %} 
-                                "<a href="{% url 'problems:problem_detail' submission.problem.slug %}" style="color: #ffffff; text-decoration: none;">{{ submission.problem.title }}</a>" problem
+                                "<a href="{% url 'problems:problem_detail' submission.problem.slug %}" style="color: var(--text-primary); text-decoration: none;">{{ submission.problem.title }}</a>" problem
                             </div>
                             <div class="submission-time">{{ submission.submitted_at|timesince }} ago</div>
                         </div>

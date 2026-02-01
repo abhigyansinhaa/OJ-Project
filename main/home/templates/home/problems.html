@@ -27,7 +27,7 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: #333333;
+        background: var(--border-light);
     }
 
     .page-title {
@@ -82,8 +82,8 @@
 
     .filter-select:focus {
         outline: none;
-        border-color: #444444;
-        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+        border-color: var(--border-light);
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
     }
 
     .search-box {
@@ -102,8 +102,8 @@
 
     .search-input:focus {
         outline: none;
-        border-color: #444444;
-        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+        border-color: var(--border-light);
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
     }
 
     .problems-content {
@@ -141,11 +141,11 @@
     }
 
     .filter-option:hover {
-        background: rgba(255, 255, 255, 0.05);
+        background: var(--hover-bg);
     }
 
     .filter-checkbox {
-        accent-color: #ffffff;
+        accent-color: var(--btn-primary-bg);
     }
 
     .filter-text {
@@ -175,7 +175,7 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: #333333;
+        background: var(--border-light);
         transform: scaleX(0);
         transition: transform 0.3s ease;
     }
@@ -186,8 +186,8 @@
 
     .problem-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
-        border-color: #333333;
+        box-shadow: var(--shadow-hover);
+        border-color: var(--border-light);
     }
 
     .problem-header {
@@ -258,9 +258,9 @@
     }
 
     .btn-solve {
-        background: #ffffff;
+        background: var(--btn-primary-bg);
         border: none;
-        color: #000000;
+        color: var(--btn-primary-text);
         padding: 0.75rem 1.5rem;
         border-radius: 8px;
         font-weight: 600;
@@ -273,16 +273,16 @@
 
     .btn-solve:hover {
         transform: translateY(-1px);
-        background: #e0e0e0;
-        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
-        color: #000000;
+        background: var(--btn-primary-hover);
+        box-shadow: var(--shadow-hover);
+        color: var(--btn-primary-text);
         text-decoration: none;
     }
 
     .btn-preview {
         background: transparent;
-        border: 1px solid var(--dark-border);
-        color: var(--dark-text-secondary);
+        border: 1px solid var(--border-light);
+        color: var(--text-secondary);
         padding: 0.75rem 1.5rem;
         border-radius: 8px;
         font-weight: 500;
@@ -294,8 +294,8 @@
     }
 
     .btn-preview:hover {
-        border-color: #444444;
-        color: #ffffff;
+        border-color: var(--border-light);
+        color: var(--text-primary);
         text-decoration: none;
     }
 
@@ -317,16 +317,16 @@
     }
 
     .page-link:hover {
-        background: #333333;
-        border-color: #444444;
-        color: #ffffff;
+        background: var(--hover-bg);
+        border-color: var(--border-light);
+        color: var(--text-primary);
         text-decoration: none;
     }
 
     .page-link.active {
-        background: #ffffff;
-        border-color: #ffffff;
-        color: #000000;
+        background: var(--btn-primary-bg);
+        border-color: var(--btn-primary-bg);
+        color: var(--btn-primary-text);
     }
 
     .loading-spinner {
@@ -340,8 +340,8 @@
     .spinner {
         width: 40px;
         height: 40px;
-        border: 4px solid var(--dark-border);
-        border-top: 4px solid #ffffff;
+        border: 4px solid var(--border-light);
+        border-top: 4px solid var(--btn-primary-bg);
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin-right: 1rem;

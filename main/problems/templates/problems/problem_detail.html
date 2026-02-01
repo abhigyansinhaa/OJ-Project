@@ -14,7 +14,7 @@
         display: flex;
         height: calc(100vh - 60px);
         overflow: hidden;
-        background: #000;
+        background: var(--bg-primary);
     }
 
     /* Resizable panels */
@@ -26,7 +26,7 @@
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        background: linear-gradient(180deg, #0a0a0a 0%, #000000 100%);
+        background: var(--bg-card);
     }
 
     .panel-right {
@@ -36,12 +36,12 @@
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        background: linear-gradient(180deg, #080808 0%, #000000 100%);
+        background: var(--bg-card);
     }
 
     .resizer {
         width: 4px;
-        background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+        background: var(--border-color);
         cursor: col-resize;
         transition: all 0.2s;
         position: relative;
@@ -50,8 +50,8 @@
 
     .resizer:hover,
     .resizer.active {
-        background: #333333;
-        box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+        background: var(--border-light);
+        box-shadow: var(--shadow-hover);
     }
 
     .resizer::after {
@@ -62,7 +62,7 @@
         transform: translate(-50%, -50%);
         width: 2px;
         height: 40px;
-        background: #333;
+        background: var(--border-light);
         border-radius: 1px;
         transition: background 0.2s;
     }
@@ -77,8 +77,8 @@
         align-items: center;
         justify-content: space-between;
         padding: 0.75rem 1rem;
-        background: linear-gradient(90deg, #0a0a0a 0%, #111111 100%);
-        border-bottom: 1px solid #1a1a1a;
+        background: var(--bg-surface);
+        border-bottom: 1px solid var(--border-color);
         flex-shrink: 0;
     }
 
@@ -91,7 +91,7 @@
         padding: 0.5rem 1rem;
         background: transparent;
         border: none;
-        color: #666;
+        color: var(--text-muted);
         font-size: 0.85rem;
         font-weight: 500;
         cursor: pointer;
@@ -101,13 +101,13 @@
     }
 
     .panel-tab:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: #aaa;
+        background: var(--hover-bg);
+        color: var(--text-secondary);
     }
 
     .panel-tab.active {
-        background: #ffffff;
-        color: #000;
+        background: var(--btn-primary-bg);
+        color: var(--btn-primary-text);
         font-weight: 600;
     }
 
@@ -119,8 +119,8 @@
     .panel-btn {
         padding: 0.4rem 0.75rem;
         background: transparent;
-        border: 1px solid #2a2a2a;
-        color: #666;
+        border: 1px solid var(--border-light);
+        color: var(--text-muted);
         font-size: 0.8rem;
         border-radius: 6px;
         cursor: pointer;
@@ -132,9 +132,9 @@
     }
 
     .panel-btn:hover {
-        border-color: #444444;
-        color: #ffffff;
-        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--border-light);
+        color: var(--text-primary);
+        background: var(--hover-bg);
     }
 
     /* Panel Content */
@@ -154,13 +154,13 @@
     .problem-title-section {
         margin-bottom: 1.5rem;
         padding-bottom: 1rem;
-        border-bottom: 1px solid #1a1a1a;
+        border-bottom: 1px solid var(--border-color);
     }
 
     .problem-title {
         font-size: 1.4rem;
         font-weight: 700;
-        color: #fff;
+        color: var(--text-primary);
         margin-bottom: 0.75rem;
         display: flex;
         align-items: center;
@@ -221,18 +221,18 @@
         display: flex;
         align-items: center;
         gap: 0.4rem;
-        color: #555;
+        color: var(--text-secondary);
         font-size: 0.8rem;
     }
 
     .meta-item i {
-        color: #444;
+        color: var(--text-muted);
     }
 
     .tag-badge {
-        background: rgba(255, 255, 255, 0.05);
-        color: #888888;
-        border: 1px solid #2a2a2a;
+        background: var(--hover-bg);
+        color: var(--text-secondary);
+        border: 1px solid var(--border-light);
         padding: 0.25rem 0.6rem;
         border-radius: 4px;
         font-size: 0.7rem;
@@ -242,7 +242,7 @@
     .section-title {
         font-size: 0.85rem;
         font-weight: 600;
-        color: #888;
+        color: var(--text-secondary);
         margin: 1.5rem 0 0.75rem 0;
         display: flex;
         align-items: center;
@@ -257,21 +257,21 @@
     }
 
     .problem-statement {
-        color: #aaa;
+        color: var(--text-primary);
         line-height: 1.8;
         font-size: 0.9rem;
         white-space: pre-wrap;
     }
 
     .format-content {
-        color: #888;
+        color: var(--text-secondary);
         line-height: 1.6;
         font-size: 0.85rem;
         white-space: pre-wrap;
-        background: linear-gradient(135deg, #0a0a0a 0%, #111111 100%);
+        background: var(--bg-surface);
         padding: 1rem 1.25rem;
         border-radius: 8px;
-        border-left: 2px solid #333333;
+        border-left: 2px solid var(--border-light);
         font-family: 'JetBrains Mono', monospace;
     }
 
@@ -283,7 +283,7 @@
 
     .constraints-list li {
         padding: 0.5rem 0;
-        color: #777;
+        color: var(--text-secondary);
         font-size: 0.85rem;
         display: flex;
         align-items: center;
@@ -293,13 +293,13 @@
 
     .constraints-list li::before {
         content: '→';
-        color: #555555;
+        color: var(--text-muted);
         font-weight: bold;
     }
 
     .example-item {
-        background: linear-gradient(135deg, #0a0a0a 0%, #0d0d0d 100%);
-        border: 1px solid #1a1a1a;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
         border-radius: 8px;
         padding: 1rem;
         margin-bottom: 1rem;
@@ -307,7 +307,7 @@
 
     .example-label {
         font-weight: 600;
-        color: #666;
+        color: var(--text-secondary);
         margin-bottom: 0.75rem;
         font-size: 0.8rem;
         text-transform: uppercase;
@@ -322,15 +322,15 @@
     }
 
     .example-box {
-        background: #000;
-        border: 1px solid #1a1a1a;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
         border-radius: 6px;
         padding: 0.75rem;
     }
 
     .example-box-label {
         font-size: 0.65rem;
-        color: #555;
+        color: var(--text-muted);
         text-transform: uppercase;
         letter-spacing: 1px;
         margin-bottom: 0.5rem;
@@ -339,16 +339,16 @@
     .example-box-content {
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.85rem;
-        color: #cccccc;
+        color: var(--text-primary);
         white-space: pre-wrap;
     }
 
     .example-explanation {
-        color: #555;
+        color: var(--text-secondary);
         font-size: 0.8rem;
         font-style: italic;
         padding-top: 0.75rem;
-        border-top: 1px solid #1a1a1a;
+        border-top: 1px solid var(--border-color);
     }
 
     /* Editor Panel Styles */
@@ -357,14 +357,14 @@
         align-items: center;
         justify-content: space-between;
         padding: 0.6rem 1rem;
-        background: linear-gradient(90deg, #0a0a0a 0%, #111111 100%);
-        border-bottom: 1px solid #1a1a1a;
+        background: var(--bg-surface);
+        border-bottom: 1px solid var(--border-color);
     }
 
     .language-select {
-        background: #000;
-        border: 1px solid #2a2a2a;
-        color: #aaa;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
         padding: 0.5rem 1rem;
         border-radius: 6px;
         font-size: 0.85rem;
@@ -374,13 +374,13 @@
     }
 
     .language-select:hover {
-        border-color: #333;
+        border-color: var(--border-light);
     }
 
     .language-select:focus {
         outline: none;
-        border-color: #444444;
-        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+        border-color: var(--border-light);
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
     }
 
     .editor-container {
@@ -394,15 +394,15 @@
         flex: 1;
         position: relative;
         overflow: hidden;
-        background: #000;
+        background: var(--bg-primary);
     }
 
     .code-textarea {
         width: 100%;
         height: 100%;
-        background: #000;
+        background: var(--bg-primary);
         border: none;
-        color: #e0e0e0;
+        color: var(--text-primary);
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.9rem;
         line-height: 1.7;
@@ -413,11 +413,11 @@
     }
 
     .code-textarea::placeholder {
-        color: #333;
+        color: var(--text-muted);
     }
 
     .code-textarea::selection {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(0, 0, 0, 0.1);
     }
 
     /* Bottom Action Bar */
@@ -426,8 +426,8 @@
         align-items: center;
         justify-content: space-between;
         padding: 0.75rem 1rem;
-        background: linear-gradient(90deg, #0a0a0a 0%, #111111 100%);
-        border-top: 1px solid #1a1a1a;
+        background: var(--bg-surface);
+        border-top: 1px solid var(--border-color);
         flex-shrink: 0;
     }
 
@@ -446,8 +446,8 @@
     .btn-run {
         padding: 0.6rem 1.25rem;
         background: transparent;
-        border: 1px solid #2a2a2a;
-        color: #888;
+        border: 1px solid var(--border-light);
+        color: var(--text-secondary);
         font-size: 0.85rem;
         font-weight: 500;
         border-radius: 6px;
@@ -460,16 +460,16 @@
     }
 
     .btn-run:hover {
-        border-color: #444444;
-        color: #ffffff;
-        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--border-light);
+        color: var(--text-primary);
+        background: var(--hover-bg);
     }
 
     .btn-submit {
         padding: 0.6rem 1.75rem;
-        background: #ffffff;
+        background: var(--btn-primary-bg);
         border: none;
-        color: #000;
+        color: var(--btn-primary-text);
         font-size: 0.85rem;
         font-weight: 600;
         border-radius: 6px;
@@ -483,8 +483,8 @@
 
     .btn-submit:hover {
         transform: translateY(-1px);
-        background: #e0e0e0;
-        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
+        background: var(--btn-primary-hover);
+        box-shadow: var(--shadow-hover);
     }
 
     /* Recent Submissions Panel */
@@ -501,16 +501,16 @@
         justify-content: space-between;
         align-items: center;
         padding: 0.75rem 1rem;
-        background: linear-gradient(135deg, #0a0a0a 0%, #0d0d0d 100%);
-        border: 1px solid #1a1a1a;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
         border-radius: 6px;
         margin-bottom: 0.5rem;
         transition: all 0.2s;
     }
 
     .submission-item:hover {
-        border-color: #2a2a2a;
-        background: linear-gradient(135deg, #0d0d0d 0%, #111111 100%);
+        border-color: var(--border-light);
+        background: var(--bg-card);
     }
 
     .submission-info {
@@ -521,12 +521,12 @@
 
     .submission-time {
         font-size: 0.8rem;
-        color: #666;
+        color: var(--text-secondary);
     }
 
     .submission-lang {
         font-size: 0.75rem;
-        color: #444;
+        color: var(--text-muted);
     }
 
     .status-badge {
@@ -569,19 +569,19 @@
 
     .login-prompt-icon {
         font-size: 4rem;
-        color: #333;
+        color: var(--text-muted);
         margin-bottom: 1.5rem;
     }
 
     .login-prompt-title {
         font-size: 1.5rem;
         font-weight: 600;
-        color: #fff;
+        color: var(--text-primary);
         margin-bottom: 0.75rem;
     }
 
     .login-prompt-text {
-        color: #666;
+        color: var(--text-secondary);
         margin-bottom: 2rem;
         max-width: 300px;
         line-height: 1.6;
@@ -596,9 +596,9 @@
 
     .btn-login {
         padding: 0.75rem 2rem;
-        background: #ffffff;
+        background: var(--btn-primary-bg);
         border: none;
-        color: #000;
+        color: var(--btn-primary-text);
         font-size: 0.9rem;
         font-weight: 600;
         border-radius: 8px;
@@ -610,18 +610,18 @@
     }
 
     .btn-login:hover {
-        background: #e0e0e0;
+        background: var(--btn-primary-hover);
         transform: translateY(-1px);
-        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
-        color: #000;
+        box-shadow: var(--shadow-hover);
+        color: var(--btn-primary-text);
         text-decoration: none;
     }
 
     .btn-register {
         padding: 0.75rem 2rem;
         background: transparent;
-        border: 1px solid #333;
-        color: #888;
+        border: 1px solid var(--border-light);
+        color: var(--text-secondary);
         font-size: 0.9rem;
         font-weight: 600;
         border-radius: 8px;
@@ -633,9 +633,9 @@
     }
 
     .btn-register:hover {
-        border-color: #444;
-        color: #fff;
-        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--border-light);
+        color: var(--text-primary);
+        background: var(--hover-bg);
         text-decoration: none;
     }
 
@@ -660,7 +660,7 @@
         }
 
         .panel-left {
-            border-bottom: 1px solid var(--dark-border);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .example-row {

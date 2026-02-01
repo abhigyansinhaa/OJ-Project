@@ -26,7 +26,7 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: #333333;
+        background: var(--border-light);
     }
 
     .problem-title {
@@ -152,7 +152,7 @@
 
     .constraints-list li::before {
         content: '•';
-        color: #555555;
+        color: var(--text-muted);
         font-weight: bold;
         margin-right: 0.5rem;
     }
@@ -188,8 +188,8 @@
 
     .form-select:focus {
         outline: none;
-        border-color: #444444;
-        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+        border-color: var(--border-light);
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
     }
 
     .code-editor {
@@ -232,8 +232,8 @@
     }
 
     .btn-editor:hover {
-        border-color: #444444;
-        color: #ffffff;
+        border-color: var(--border-light);
+        color: var(--text-primary);
     }
 
     .code-textarea {
@@ -280,15 +280,15 @@
 
     .io-textarea:focus {
         outline: none;
-        border-color: #444444;
-        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+        border-color: var(--border-light);
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
     }
 
     .btn-submit {
         width: 100%;
-        background: #ffffff;
+        background: var(--btn-primary-bg);
         border: none;
-        color: #000000;
+        color: var(--btn-primary-text);
         padding: 1rem;
         border-radius: 12px;
         font-size: 1.1rem;
@@ -301,8 +301,8 @@
 
     .btn-submit:hover {
         transform: translateY(-1px);
-        background: #e0e0e0;
-        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        background: var(--btn-primary-hover);
+        box-shadow: var(--shadow-hover);
     }
 
     .btn-submit:active {
@@ -322,7 +322,7 @@
         width: 20px;
         height: 20px;
         border: 2px solid transparent;
-        border-top: 2px solid white;
+        border-top: 2px solid var(--btn-primary-text);
         border-radius: 50%;
         animation: spin 1s linear infinite;
     }
@@ -333,8 +333,8 @@
     }
 
     .hint-section {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid #2a2a2a;
+        background: var(--hover-bg);
+        border: 1px solid var(--border-light);
         border-radius: 8px;
         padding: 1rem;
         margin-top: 1rem;
@@ -342,7 +342,7 @@
 
     .hint-title {
         font-weight: 600;
-        color: #888888;
+        color: var(--text-secondary);
         margin-bottom: 0.5rem;
         display: flex;
         align-items: center;

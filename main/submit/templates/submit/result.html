@@ -191,7 +191,7 @@
     .metric-value {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #ffffff;
+        color: var(--text-primary);
         margin-bottom: 0.25rem;
     }
 
@@ -264,29 +264,29 @@
     }
 
     .btn-primary {
-        background: #ffffff;
-        color: #000000;
+        background: var(--btn-primary-bg);
+        color: var(--btn-primary-text);
         border: none;
     }
 
     .btn-primary:hover {
         transform: translateY(-1px);
-        background: #e0e0e0;
-        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
-        color: #000000;
+        background: var(--btn-primary-hover);
+        box-shadow: var(--shadow-hover);
+        color: var(--btn-primary-text);
         text-decoration: none;
     }
 
     .btn-secondary {
         background: transparent;
-        border: 1px solid #2a2a2a;
-        color: #888888;
+        border: 1px solid var(--border-light);
+        color: var(--text-secondary);
     }
 
     .btn-secondary:hover {
-        border-color: #444444;
-        color: #ffffff;
-        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--border-light);
+        color: var(--text-primary);
+        background: var(--hover-bg);
         text-decoration: none;
     }
 
@@ -301,7 +301,7 @@
 
     .progress-fill {
         height: 100%;
-        background: {% if submission.status == 'accepted' %}var(--success-color){% else %}#ffffff{% endif %};
+        background: {% if submission.status == 'accepted' %}var(--success-color){% else %}var(--btn-primary-bg){% endif %};
         transition: width 0.3s ease;
     }
 
